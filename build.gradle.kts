@@ -1,7 +1,6 @@
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
-	war
 	id("org.springframework.boot") version "3.3.4"
 	id("io.spring.dependency-management") version "1.1.6"
 }
@@ -23,8 +22,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.boot:spring-boot-starter-tomcat")
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-docker-compose
-	implementation("org.springframework.boot:spring-boot-docker-compose:3.3.3")
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis
 	implementation("org.springframework.boot:spring-boot-starter-data-redis:3.3.2")
 	// https://mvnrepository.com/artifact/org.flywaydb/flyway-core

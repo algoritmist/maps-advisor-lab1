@@ -23,8 +23,12 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.boot:spring-boot-starter-tomcat")
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-docker-compose
+	implementation("org.springframework.boot:spring-boot-docker-compose:3.3.3")
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis
 	implementation("org.springframework.boot:spring-boot-starter-data-redis:3.3.2")
+	// https://mvnrepository.com/artifact/org.flywaydb/flyway-core
+	implementation("org.flywaydb:flyway-core:10.18.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

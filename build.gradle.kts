@@ -26,6 +26,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-redis:3.3.2")
 	// https://mvnrepository.com/artifact/org.flywaydb/flyway-core
 	implementation("org.flywaydb:flyway-core:10.18.0")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

@@ -1,4 +1,4 @@
-package com.example.mapsAdvisor
+package org.mapsAdvisor
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

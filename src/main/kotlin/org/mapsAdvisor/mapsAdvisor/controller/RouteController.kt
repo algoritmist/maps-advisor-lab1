@@ -3,6 +3,7 @@ package org.mapsAdvisor.mapsAdvisor.controller
 import org.mapsAdvisor.mapsAdvisor.request.PlaceRequest
 import org.mapsAdvisor.mapsAdvisor.request.RouteRequest
 import org.mapsAdvisor.mapsAdvisor.response.PlaceResponse
+import org.mapsAdvisor.mapsAdvisor.response.RouteResponse
 import org.mapsAdvisor.mapsAdvisor.service.RouteService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

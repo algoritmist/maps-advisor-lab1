@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/place")
-class CompanyController(
+class PlaceController(
     private val placeService: PlaceService
 ) {
 
@@ -27,11 +27,11 @@ class CompanyController(
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "50") size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        val companies = placeService.findAll(page, size)
+        val places = placeService.findAll(page, size)
 
         return ResponseEntity
             .ok(
-                companies.map { PlaceResponse.fromEntity(it) }
+                places.map { PlaceResponse.fromEntity(it) }
             )
     }
 
@@ -39,11 +39,11 @@ class CompanyController(
     fun findPlaceById(
         @PathVariable id: String,
     ): ResponseEntity<PlaceResponse> {
-        val company = placeService.findById(id)
+        val place = placeService.findById(id)
 
         return ResponseEntity
             .ok(
-                PlaceResponse.fromEntity(company)
+                PlaceResponse.fromEntity(place)
             )
     }
 

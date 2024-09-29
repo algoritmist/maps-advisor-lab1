@@ -27,6 +27,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.flywaydb/flyway-core
 	implementation("org.flywaydb:flyway-core:10.18.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	// https://mvnrepository.com/artifact/io.quarkus/quarkus-liquibase-mongodb
+	implementation("io.quarkus:quarkus-liquibase-mongodb:3.15.1")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

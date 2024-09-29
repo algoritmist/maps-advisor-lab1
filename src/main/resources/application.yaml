@@ -14,3 +14,10 @@ spring:
         mongodb:
             database: maps
             replica-set-name: myReplicaSet
+
+quarkus:
+    mongodb:
+        connection-string: mongodb://localhost:27017
+    liquibase-mongodb:
+        migrate-at-start: true
+        change-log: db/changeLog.xml

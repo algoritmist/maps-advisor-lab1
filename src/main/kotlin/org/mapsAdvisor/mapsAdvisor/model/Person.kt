@@ -2,24 +2,19 @@ package org.mapsAdvisor.mapsAdvisor.model
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.time.Instant
 import java.util.*
 
 @Document("person")
 data class Person(
     @Id
     val id: String? = null,
-
-    var fullName: String,
-
+    var name: String,
     var username: String,
-
     var password: String,
-
     var role: Role,
-
-    var places: List<String> = listOf(),
-
-    var registrationDate: Date
+    var placesOwned: List<String> = listOf(),
+    var registrationDate: Instant,
 )
 
 enum class Role {

@@ -4,13 +4,13 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 
-@Document("route_feedback")
-data class RouteFeedback(
+@Document("place_feedback")
+data class PlaceFeedback(
     @Id
     val id: String? = null,
 
-    @Field("route_id")
-    var routeId: String,
+    @Field("place_id")
+    var placeId: String,
 
     @Field("grade")
     var grade: Grade

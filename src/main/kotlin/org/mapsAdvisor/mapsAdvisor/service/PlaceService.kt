@@ -26,7 +26,7 @@ class PlaceService(
             )
         )
 
-    fun findAll(page: Int, size: Int = 50): List<Place> {
+    fun findAll(page: Int, size: Int): List<Place> {
         val pageable = PageRequest.of(page, size)
         return placeRepository.findAll(pageable).content
     }

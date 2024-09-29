@@ -8,3 +8,9 @@ spring:
             port: 6379
             username: ${REDIS_USER}
             password: ${REDIS_USER_PASSWORD}
+
+
+
+        mongodb:
+            database: maps
+            replica-set-name: myReplicaSet

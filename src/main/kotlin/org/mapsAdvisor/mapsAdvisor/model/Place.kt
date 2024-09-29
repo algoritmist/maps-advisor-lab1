@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexType
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed
 import org.springframework.data.mongodb.core.mapping.Document
 
-@Document("places")
+@Document("place")
 data class Place(
     @Id
     val id: String? = null,

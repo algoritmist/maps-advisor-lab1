@@ -5,7 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.6"
 }
 
-group = "org.mapsAdvisor"
+group = "org.mapsAdvisor.mapsAdvisor"
 version = "0.0.1-SNAPSHOT"
 
 java {
@@ -34,11 +34,6 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	// add docker dependency
-	implementation("org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE")
-	// using Gradle you need to add a new docker plugin like this:
-	implementation("se.transmode.gradle:gradle-docker:1.2")
-
 }
 
 kotlin {

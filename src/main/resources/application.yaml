@@ -24,8 +24,8 @@ quarkus:
 
 app:
     datasource:
-        url: ${DATASOURCE_URL}
-        db: ${DATASOURCE_DATABASE}
-        username: ${DATASOURCE_USERNAME}
-        password: ${DATASOURCE_PASSWORD}
-        authSource: ${DATASOURCE_AUTHSOURCE}
+        url: mongodb://mongo:27017
+        db: test
+        username: user
+        password: password
+        authSource: admin

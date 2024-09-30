@@ -1,0 +1,20 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "3",
+        "author": "your_name",
+        "labels": "createCollectionLabel",
+        "context": "createCollectionContext",
+        "comment": "create_collection_comment",
+        "changes": [
+          {
+            "createCollection": {
+              "collectionName": "towns_json"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

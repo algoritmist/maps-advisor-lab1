@@ -1,0 +1,18 @@
+name: Test worklow
+run-name: ${{ github.actor }} is running worklow
+on:
+  push:
+    branches: ["main", "workflow"]
+  pull_request:
+    branches: ["main", "workflow"]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    container: 8.10.1-jdk17
+    steps:
+    - name: checkout 
+      uses: actions/checkout@v4
+    - name: build
+      run: gradle test
+      

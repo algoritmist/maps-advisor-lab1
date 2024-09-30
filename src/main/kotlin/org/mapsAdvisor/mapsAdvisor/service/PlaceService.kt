@@ -47,10 +47,10 @@ class PlaceService(
         distanceKm: Double,
         page: Int
     ): List<Place> {
-        val point = Point(longitude, latitude)
+        val point = GeoJsonPoint(longitude, latitude)
         val distance = Distance(distanceKm)
         val pageable = PageRequest.of(page, SIZE)
-        return placeRepository.findByLocationNear(point, distance, pageable).content
+        return placeRepository.findAllByCoordinates(latitude, longitude,pageable).content
     }
 
     fun findNearbyPlacesWithTag(
@@ -63,7 +63,7 @@ class PlaceService(
         val point = Point(longitude, latitude)
         val distance = Distance(distanceKm)
         val pageable = PageRequest.of(page, SIZE)
-        return placeRepository.findByCoordinatesNearAndTagsContaining(point, distance, tag, pageable).content
+        return placeRepository.findAllByCoordinatesAndTagsContaining(latitude, longitude, tag, pageable).content
     }
 
     fun findNearbyPlacesByName(
@@ -75,7 +75,7 @@ class PlaceService(
         val point = Point(longitude, latitude)
         val distance = Distance(distanceKm)
         val pageable = PageRequest.of(page, SIZE)
-        return placeRepository.findByCoordinatesNearAndNameContaining(point, distance, name, pageable).content
+        return placeRepository.findAllByCoordinatesAndName(latitude, longitude, name, pageable).content
     }
 
     @Transactional

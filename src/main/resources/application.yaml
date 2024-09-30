@@ -2,30 +2,16 @@ server:
     port: 8888
 spring:
     data:
-        redis:
-            database: 0
-            host: "localhost"
-            port: 6379
-            username: ${REDIS_USER}
-            password: ${REDIS_USER_PASSWORD}
-
-
-
         mongodb:
-            database: maps
+            url: mongodb://mongo:mongo@localhost/test?authSource=admin
+            database: testbase
+            authentication-database: admin
             replica-set-name: myReplicaSet
-
-quarkus:
-    mongodb:
-        connection-string: mongodb://localhost:27017
-    liquibase-mongodb:
-        migrate-at-start: true
-        change-log: db/changeLog.xml
 
 app:
     datasource:
-        url: mongodb://mongo:27017
-        db: test
-        username: user
-        password: password
+        url: mongodb://localhost:27017
+        db: testbase
+        username: mongo
+        password: mongo
         authSource: admin

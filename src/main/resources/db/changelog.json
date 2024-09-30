@@ -3,14 +3,14 @@
     {
       "changeSet": {
         "id": "3",
-        "author": "your_name",
+        "author": "mongo",
         "labels": "createCollectionLabel",
         "context": "createCollectionContext",
         "comment": "create_collection_comment",
         "changes": [
           {
             "createCollection": {
-              "collectionName": "towns_json"
+              "collectionName": "qwerty"
             }
           }
         ]

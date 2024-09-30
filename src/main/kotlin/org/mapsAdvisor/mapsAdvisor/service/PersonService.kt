@@ -28,7 +28,7 @@ class PersonService(
         )
 
     @Transactional
-    fun assignPlaceToUser(personId: String, placeId: String): Person {
+    fun assignPlaceToUser(personId: String, placeId: String): PersonWithPlacesResponse {
         val person = personRepository.findById(personId).orElseThrow {
             throw IllegalArgumentException("Person with id $personId not found")
         }
@@ -51,6 +51,8 @@ class PersonService(
         personRepository.save(person)
         placeRepository.save(place)
 
-        return person
+        val places = placeRepository.findAllById(person.placesOwned)
+
+        return PersonWithPlacesResponse.fromEntities(person, places)
     }
 }

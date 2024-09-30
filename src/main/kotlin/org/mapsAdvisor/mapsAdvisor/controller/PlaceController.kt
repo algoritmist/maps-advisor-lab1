@@ -43,7 +43,7 @@ class PlaceController(
 
     @GetMapping("/{id}")
     fun findPlaceById(
-        @NotBlank @PathVariable id: String,
+        @PathVariable id: String,
     ): ResponseEntity<PlaceResponse> {
         return try {
             val place = placeService.findById(id)

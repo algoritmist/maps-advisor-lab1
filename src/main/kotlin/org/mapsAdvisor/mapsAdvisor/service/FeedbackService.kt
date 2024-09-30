@@ -1,9 +1,12 @@
 package org.mapsAdvisor.mapsAdvisor.service
 
+import org.mapsAdvisor.mapsAdvisor.model.Grade
 import org.mapsAdvisor.mapsAdvisor.model.PlaceFeedback
 import org.mapsAdvisor.mapsAdvisor.model.RouteFeedback
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceFeedbackRepository
 import org.mapsAdvisor.mapsAdvisor.repository.RouteFeedbackRepository
+import org.mapsAdvisor.mapsAdvisor.request.PlaceFeedbackRequest
+import org.mapsAdvisor.mapsAdvisor.request.RouteFeedbackRequest
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -18,8 +21,16 @@ class FeedbackService(
         const val SIZE: Int = 50
     }
 
-    fun createRouteFeedback(feedback: RouteFeedback): RouteFeedback {
-        return routeFeedbackRepository.save(feedback)
+    fun createRouteFeedback(feedback: RouteFeedbackRequest): RouteFeedback {
+        return routeFeedbackRepository.save(
+            RouteFeedback(
+                routeId = feedback.routeId,
+                grade = Grade(
+                    personId = feedback.personId,
+                    grade = feedback.grade,
+                )
+            )
+        )
     }
 
     fun getRouteFeedbacks(routeId: String, page: Int): Page<RouteFeedback> {
@@ -31,8 +42,16 @@ class FeedbackService(
         routeFeedbackRepository.deleteById(feedbackId)
     }
 
-    fun createPlaceFeedback(feedback: PlaceFeedback): PlaceFeedback {
-        return placeFeedbackRepository.save(feedback)
+    fun createPlaceFeedback(feedback: PlaceFeedbackRequest): PlaceFeedback {
+        return placeFeedbackRepository.save(
+            PlaceFeedback(
+                placeId = feedback.routeId,
+                grade = Grade(
+                    personId = feedback.personId,
+                    grade = feedback.grade,
+                )
+            )
+        )
     }
 
     fun getPlaceFeedbacks(routeId: String, page: Int): Page<PlaceFeedback> {

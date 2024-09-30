@@ -1,12 +1,10 @@
 package org.mapsAdvisor.mapsAdvisor.controller
 
 import jakarta.validation.Valid
-import org.mapsAdvisor.mapsAdvisor.request.PersonLoginRequest
 import org.mapsAdvisor.mapsAdvisor.request.PersonRequest
-import org.mapsAdvisor.mapsAdvisor.request.PersonSignupRequest
 import org.mapsAdvisor.mapsAdvisor.response.PersonResponse
-import org.mapsAdvisor.mapsAdvisor.response.PlaceResponse
 import org.mapsAdvisor.mapsAdvisor.service.PersonService
+import org.mapsAdvisor.mapsAdvisor.service.PersonWithPlacesResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -24,5 +22,20 @@ class PersonController(private val userService: PersonService) {
             .body(
                 PersonResponse.fromEntity(person)
             )
+    }
+
+    @PostMapping("/assign")
+    fun assignPlaceToUser(
+        @RequestParam personId: String,
+        @RequestParam placeId: String
+    ): ResponseEntity<PersonWithPlacesResponse> {
+        return try {
+            val updatedPerson = userService.assignPlaceToUser(personId, placeId)
+            ResponseEntity.ok(updatedPerson)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
+        } catch (e: IllegalStateException) {
+            ResponseEntity.status(HttpStatus.CONFLICT).body(null)
+        }
     }
 }

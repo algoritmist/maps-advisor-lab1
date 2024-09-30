@@ -21,3 +21,11 @@ quarkus:
     liquibase-mongodb:
         migrate-at-start: true
         change-log: db/changeLog.xml
+
+app:
+    datasource:
+        url: ${DATASOURCE_URL}
+        db: ${DATASOURCE_DATABASE}
+        username: ${DATASOURCE_USERNAME}
+        password: ${DATASOURCE_PASSWORD}
+        authSource: ${DATASOURCE_AUTHSOURCE}

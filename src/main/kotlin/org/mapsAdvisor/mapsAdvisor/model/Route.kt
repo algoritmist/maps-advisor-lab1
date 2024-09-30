@@ -11,5 +11,5 @@ data class Route(
     var name: String,
     var description: String,
     @Field("places")
-    var places: List<String> = listOf()
+    var places: List<String> = listOf() // references
 )

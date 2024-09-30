@@ -2,6 +2,7 @@ package org.mapsAdvisor.mapsAdvisor.service
 
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.model.Place
+import org.mapsAdvisor.mapsAdvisor.repository.PlaceFeedbackRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
 import org.mapsAdvisor.mapsAdvisor.request.PlaceRequest
 import org.springframework.data.domain.PageRequest
@@ -9,11 +10,16 @@ import org.springframework.data.geo.Distance
 import org.springframework.data.geo.Point
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PlaceService(
-    private val placeRepository: PlaceRepository
+    private val placeRepository: PlaceRepository,
+    private val placeFeedbackRepository: PlaceFeedbackRepository
 ) {
+    companion object {
+        const val SIZE: Int = 50
+    }
 
     fun createPlace(request: PlaceRequest): Place =
         placeRepository.save(
@@ -26,8 +32,8 @@ class PlaceService(
             )
         )
 
-    fun findAll(page: Int, size: Int): List<Place> {
-        val pageable = PageRequest.of(page, size)
+    fun findAll(page: Int): List<Place> {
+        val pageable = PageRequest.of(page, SIZE)
         return placeRepository.findAll(pageable).content
     }
 
@@ -39,12 +45,11 @@ class PlaceService(
         latitude: Double,
         longitude: Double,
         distanceKm: Double,
-        page: Int,
-        size: Int
+        page: Int
     ): List<Place> {
         val point = Point(longitude, latitude)
         val distance = Distance(distanceKm)
-        val pageable = PageRequest.of(page, size)
+        val pageable = PageRequest.of(page, SIZE)
         return placeRepository.findByLocationNear(point, distance, pageable).content
     }
 
@@ -53,12 +58,11 @@ class PlaceService(
         longitude: Double,
         distanceKm: Double,
         tag: String,
-        page: Int,
-        size: Int
+        page: Int
     ): List<Place> {
         val point = Point(longitude, latitude)
         val distance = Distance(distanceKm)
-        val pageable = PageRequest.of(page, size)
+        val pageable = PageRequest.of(page, SIZE)
         return placeRepository.findByCoordinatesNearAndTagsContaining(point, distance, tag, pageable).content
     }
 
@@ -67,17 +71,23 @@ class PlaceService(
         longitude: Double,
         distanceKm: Double,
         name: String,
-        page: Int,
-        size: Int): List<Place> {
+        page: Int): List<Place> {
         val point = Point(longitude, latitude)
         val distance = Distance(distanceKm)
-        val pageable = PageRequest.of(page, 50)
+        val pageable = PageRequest.of(page, SIZE)
         return placeRepository.findByCoordinatesNearAndNameContaining(point, distance, name, pageable).content
     }
 
+    @Transactional
     fun deleteById(id: String) {
         val placeToDelete = findById(id)
 
         placeRepository.delete(placeToDelete)
+
+        placeFeedbackRepository.deleteAllByPlaceId(id)
+    }
+
+    fun countAll(): Long {
+        return placeRepository.count()
     }
 }

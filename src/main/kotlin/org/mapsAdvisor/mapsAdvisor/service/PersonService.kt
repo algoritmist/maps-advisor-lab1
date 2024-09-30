@@ -12,7 +12,8 @@ import java.time.Instant
 @Service
 class PersonService(
     private val personRepository: PersonRepository,
-    private val placeRepository: PlaceRepository
+    private val placeRepository: PlaceRepository,
+
 ) {
     fun createPerson(request: PersonRequest): Person =
         personRepository.save(

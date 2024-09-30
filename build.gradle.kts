@@ -20,6 +20,8 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
+	implementation("org.springframework.boot:spring-boot-starter-validation:3.3.4")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.boot:spring-boot-starter-tomcat")
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis
@@ -32,6 +34,11 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	// add docker dependency
+	implementation("org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE")
+	// using Gradle you need to add a new docker plugin like this:
+	implementation("se.transmode.gradle:gradle-docker:1.2")
+
 }
 
 kotlin {

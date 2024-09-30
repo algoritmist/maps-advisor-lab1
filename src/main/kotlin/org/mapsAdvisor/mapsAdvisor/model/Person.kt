@@ -13,7 +13,7 @@ data class Person(
     var username: String,
     var password: String,
     var role: Role,
-    var placesOwned: List<String> = listOf(),
+    var placesOwned: List<String> = listOf(), // references
     var registrationDate: Instant,
 )
 

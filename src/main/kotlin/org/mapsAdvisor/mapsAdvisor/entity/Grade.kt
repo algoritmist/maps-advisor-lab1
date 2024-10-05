@@ -1,4 +1,4 @@
-package org.mapsAdvisor.mapsAdvisor.model
+package org.mapsAdvisor.mapsAdvisor.entity
 
 import org.springframework.data.mongodb.core.mapping.Field
 

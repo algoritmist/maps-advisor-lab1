@@ -1,11 +1,9 @@
 package org.mapsAdvisor.mapsAdvisor.repository
 
 
-import org.mapsAdvisor.mapsAdvisor.model.Place
+import org.mapsAdvisor.mapsAdvisor.entity.Place
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.data.geo.Distance
-import org.springframework.data.geo.Point
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 
 import org.springframework.data.mongodb.repository.MongoRepository
@@ -35,4 +33,11 @@ interface PlaceRepository : MongoRepository<Place, String> {
         name: String,
         pageable: Pageable
     ): Page<Place>
+
+    @Query("{ 'coordinates' : ?0, 'owners' : ?1 }")
+    fun findByCoordinatesAndOwnersContaining(
+        coordinates: GeoJsonPoint, owners: List<String>,
+    ): Place?
+
+    fun deleteAllByOwnersContains(personId: String)
 }

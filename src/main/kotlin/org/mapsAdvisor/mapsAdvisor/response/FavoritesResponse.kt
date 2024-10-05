@@ -1,7 +1,6 @@
 package org.mapsAdvisor.mapsAdvisor.response
 
-import org.mapsAdvisor.mapsAdvisor.model.FavoriteEntity
-import org.mapsAdvisor.mapsAdvisor.model.RouteFeedback
+import org.mapsAdvisor.mapsAdvisor.entity.FavoriteEntity
 
 data class FavoritesResponse(
     val id: String,

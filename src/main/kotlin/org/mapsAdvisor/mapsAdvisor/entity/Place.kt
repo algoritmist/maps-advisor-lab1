@@ -1,4 +1,4 @@
-package org.mapsAdvisor.mapsAdvisor.model
+package org.mapsAdvisor.mapsAdvisor.entity
 
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size

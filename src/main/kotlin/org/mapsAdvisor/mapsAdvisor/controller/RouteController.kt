@@ -1,8 +1,6 @@
 package org.mapsAdvisor.mapsAdvisor.controller
 
-import org.mapsAdvisor.mapsAdvisor.request.PlaceRequest
 import org.mapsAdvisor.mapsAdvisor.request.RouteRequest
-import org.mapsAdvisor.mapsAdvisor.response.PlaceResponse
 import org.mapsAdvisor.mapsAdvisor.response.RouteResponse
 import org.mapsAdvisor.mapsAdvisor.service.RouteService
 import org.springframework.http.ResponseEntity
@@ -35,5 +33,16 @@ class RouteController(
             .ok(
                 companies.map { RouteResponse.fromEntity(it) }
             )
+    }
+    @DeleteMapping("/{id}")
+    fun deleteRoute(@PathVariable id: String): ResponseEntity<Void> {
+        routeService.deleteById(id)
+        return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/by-place/{placeId}")
+    fun findRoutesByPlaceId(@PathVariable placeId: String): ResponseEntity<List<RouteResponse>> {
+        val routes = routeService.findRoutesByPlaceId(placeId)
+        return ResponseEntity.ok(routes.map { RouteResponse.fromEntity(it) })
     }
 }

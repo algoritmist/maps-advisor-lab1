@@ -15,7 +15,7 @@ class FavoritesController(
     private val favoritesService: FavoritesService
 ) {
     @PostMapping
-    fun createOrUpdateFavorite(@Valid @RequestBody favoriteEntity: FavoritesRequest): ResponseEntity<FavoritesResponse> {
+    fun createFavorite(@Valid @RequestBody favoriteEntity: FavoritesRequest): ResponseEntity<FavoritesResponse> {
         val savedFavorite = favoritesService.saveFavorite(favoriteEntity)
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -27,20 +27,21 @@ class FavoritesController(
     @GetMapping("/{id}")
     fun getFavoriteById(@PathVariable id: String): ResponseEntity<FavoritesResponse> {
         val favorite = favoritesService.getFavoriteById(id)
-        return if (favorite != null) {
-            ResponseEntity
-                .status(HttpStatus.OK)
-                .body(
-                    FavoritesResponse.fromEntity(favorite)
-                )
-        } else {
-            ResponseEntity.notFound().build()
-        }
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(
+                FavoritesResponse.fromEntity(favorite)
+            )
     }
 
+
     @GetMapping("/person/{personId}")
-    fun getFavoritesByPersonId(@PathVariable personId: String): ResponseEntity<List<FavoritesResponse>> {
-        val favorites = favoritesService.getFavoritesByPersonId(personId)
+    fun getFavoritesByPersonId(
+        @PathVariable personId: String,
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "50") size: Int
+    ): ResponseEntity<List<FavoritesResponse>> {
+        val favorites = favoritesService.getFavoritesByPersonId(personId, page, size)
         return ResponseEntity.ok(
             favorites.map { FavoritesResponse.fromEntity(it) }
         )

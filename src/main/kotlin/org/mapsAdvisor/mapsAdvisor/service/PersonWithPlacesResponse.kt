@@ -1,7 +1,7 @@
 package org.mapsAdvisor.mapsAdvisor.service
 
-import org.mapsAdvisor.mapsAdvisor.model.Person
-import org.mapsAdvisor.mapsAdvisor.model.Place
+import org.mapsAdvisor.mapsAdvisor.entity.Person
+import org.mapsAdvisor.mapsAdvisor.entity.Place
 import org.mapsAdvisor.mapsAdvisor.response.PlaceResponse
 
 data class PersonWithPlacesResponse(

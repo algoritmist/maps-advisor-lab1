@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @CrossOrigin(origins = ["*"], maxAge = 3600)
-@RequestMapping("/api/auth", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping("/api/user", produces = [MediaType.APPLICATION_JSON_VALUE])
 class PersonController(private val userService: PersonService) {
     @PostMapping("/signup")
     fun createUser(@Valid @RequestBody newUser: PersonRequest): ResponseEntity<PersonResponse> {
@@ -29,13 +29,13 @@ class PersonController(private val userService: PersonService) {
         @RequestParam personId: String,
         @RequestParam placeId: String
     ): ResponseEntity<PersonWithPlacesResponse> {
-        return try {
-            val updatedPerson = userService.assignPlaceToUser(personId, placeId)
-            ResponseEntity.ok(updatedPerson)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
-        } catch (e: IllegalStateException) {
-            ResponseEntity.status(HttpStatus.CONFLICT).body(null)
-        }
+        val updatedPerson = userService.assignPlaceToUser(personId, placeId)
+        return ResponseEntity.ok(updatedPerson)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteUser(@PathVariable id: String): ResponseEntity<Void> {
+        userService.deletePersonById(id)
+        return ResponseEntity.noContent().build()
     }
 }

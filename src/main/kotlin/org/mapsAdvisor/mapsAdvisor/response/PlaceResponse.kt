@@ -1,6 +1,6 @@
 package org.mapsAdvisor.mapsAdvisor.response
 
-import org.mapsAdvisor.mapsAdvisor.model.Place
+import org.mapsAdvisor.mapsAdvisor.entity.Place
 
 
 class PlaceResponse(

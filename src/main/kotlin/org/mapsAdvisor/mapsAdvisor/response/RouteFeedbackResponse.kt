@@ -1,6 +1,6 @@
 package org.mapsAdvisor.mapsAdvisor.response
 
-import org.mapsAdvisor.mapsAdvisor.model.RouteFeedback
+import org.mapsAdvisor.mapsAdvisor.entity.RouteFeedback
 
 class RouteFeedbackResponse(
     val id: String,

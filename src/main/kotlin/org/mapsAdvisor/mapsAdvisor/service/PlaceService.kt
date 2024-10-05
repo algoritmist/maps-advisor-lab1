@@ -1,13 +1,14 @@
 package org.mapsAdvisor.mapsAdvisor.service
 
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
-import org.mapsAdvisor.mapsAdvisor.model.Place
+import org.mapsAdvisor.mapsAdvisor.entity.Place
+import org.mapsAdvisor.mapsAdvisor.repository.FavoritesRepository
+import org.mapsAdvisor.mapsAdvisor.repository.PersonRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceFeedbackRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
 import org.mapsAdvisor.mapsAdvisor.request.PlaceRequest
+import org.springframework.dao.DataAccessException
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.geo.Distance
-import org.springframework.data.geo.Point
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,14 +16,25 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class PlaceService(
     private val placeRepository: PlaceRepository,
-    private val placeFeedbackRepository: PlaceFeedbackRepository
+    private val placeFeedbackRepository: PlaceFeedbackRepository,
+    private val personRepository: PersonRepository,
+    private val favoritesRepository: FavoritesRepository
 ) {
-    companion object {
-        const val SIZE: Int = 50
-    }
+    @Transactional
+    fun createPlace(request: PlaceRequest): Place {
+        val owners = personRepository.findAllById(request.owners)
+        if (owners.size != request.owners.size) {
+            throw NotFoundException("One or more owners not found")
+        }
+        val existingPlace = placeRepository.findByCoordinatesAndOwnersContaining(
+            GeoJsonPoint(request.coordinates.longitude, request.coordinates.latitude),
+            request.owners
+        )
+        if (existingPlace != null) {
+            throw IllegalArgumentException("Place has already been added to that owner")
+        }
 
-    fun createPlace(request: PlaceRequest): Place =
-        placeRepository.save(
+        return placeRepository.save(
             Place(
                 name = request.name,
                 coordinates = GeoJsonPoint(request.coordinates.longitude, request.coordinates.latitude),
@@ -31,9 +43,10 @@ class PlaceService(
                 info = request.info
             )
         )
+    }
 
-    fun findAll(page: Int): List<Place> {
-        val pageable = PageRequest.of(page, SIZE)
+    fun findAll(page: Int, size: Int): List<Place> {
+        val pageable = PageRequest.of(page, size)
         return placeRepository.findAll(pageable).content
     }
 
@@ -45,12 +58,11 @@ class PlaceService(
         latitude: Double,
         longitude: Double,
         distanceKm: Double,
-        page: Int
+        page: Int,
+        size: Int
     ): List<Place> {
-        val point = GeoJsonPoint(longitude, latitude)
-        val distance = Distance(distanceKm)
-        val pageable = PageRequest.of(page, SIZE)
-        return placeRepository.findAllByCoordinates(latitude, longitude,pageable).content
+        val pageable = PageRequest.of(page, size)
+        return placeRepository.findAllByCoordinates(latitude, longitude, pageable).content
     }
 
     fun findNearbyPlacesWithTag(
@@ -58,11 +70,10 @@ class PlaceService(
         longitude: Double,
         distanceKm: Double,
         tag: String,
-        page: Int
+        page: Int,
+        size: Int
     ): List<Place> {
-        val point = Point(longitude, latitude)
-        val distance = Distance(distanceKm)
-        val pageable = PageRequest.of(page, SIZE)
+        val pageable = PageRequest.of(page, size)
         return placeRepository.findAllByCoordinatesAndTagsContaining(latitude, longitude, tag, pageable).content
     }
 
@@ -71,20 +82,37 @@ class PlaceService(
         longitude: Double,
         distanceKm: Double,
         name: String,
-        page: Int): List<Place> {
-        val point = Point(longitude, latitude)
-        val distance = Distance(distanceKm)
-        val pageable = PageRequest.of(page, SIZE)
+        page: Int,
+        size: Int
+    ): List<Place> {
+        val pageable = PageRequest.of(page, size)
         return placeRepository.findAllByCoordinatesAndName(latitude, longitude, name, pageable).content
     }
 
     @Transactional
     fun deleteById(id: String) {
-        val placeToDelete = findById(id)
+        try {
+            val placeToDelete = findById(id)
 
-        placeRepository.delete(placeToDelete)
+            placeRepository.delete(placeToDelete)
 
-        placeFeedbackRepository.deleteAllByPlaceId(id)
+            placeFeedbackRepository.deleteAllByPlaceId(id)
+
+            val favoritesToDelete = favoritesRepository.findAllByPlaceId(id)
+            favoritesToDelete.forEach { favorite ->
+                favoritesRepository.delete(favorite)
+            }
+
+            val owners = personRepository.findAllByPlacesOwnedContains(id)
+            owners.forEach { person ->
+                person.placesOwned = person.placesOwned.filter { it != id }
+                personRepository.save(person)
+            }
+        } catch (ex: NotFoundException) {
+            throw ex
+        } catch (ex: DataAccessException) {
+            throw IllegalStateException("Failed to delete place or associated records", ex)
+        }
     }
 
     fun countAll(): Long {

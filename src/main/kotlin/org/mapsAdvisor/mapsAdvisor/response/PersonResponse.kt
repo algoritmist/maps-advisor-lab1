@@ -1,6 +1,6 @@
 package org.mapsAdvisor.mapsAdvisor.response
 
-import org.mapsAdvisor.mapsAdvisor.model.Person
+import org.mapsAdvisor.mapsAdvisor.entity.Person
 
 data class PersonResponse(
     val username: String,

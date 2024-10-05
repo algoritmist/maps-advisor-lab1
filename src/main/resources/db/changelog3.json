@@ -21,7 +21,7 @@
                         "username",
                         "password",
                         "role",
-                        "registrationDate"
+                        "registration_date"
                       ],
                       "properties": {
                         "name": {
@@ -46,7 +46,7 @@
                           "enum": ["USER", "ADMIN", "OWNER"],
                           "description": "The role of the person"
                         },
-                        "placesOwned": {
+                        "places_owned": {
                           "bsonType": "array",
                           "items": {
                             "bsonType": "string",
@@ -54,7 +54,7 @@
                           },
                           "description": "List of place IDs owned by the person"
                         },
-                        "registrationDate": {
+                        "registration_date": {
                           "bsonType": "date",
                           "description": "The registration date of the person"
                         }

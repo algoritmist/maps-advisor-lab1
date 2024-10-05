@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 
 data class PlaceFeedbackRequest(
-    @field:NotBlank(message = "routeId не может быть пустым")
-    val routeId: String,
+    @field:NotBlank(message = "placeId не может быть пустым")
+    val placeId: String,
 
     @field:NotBlank(message = "personId не может быть пустым")
     val personId: String,

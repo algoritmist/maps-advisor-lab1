@@ -1,11 +1,10 @@
 package org.mapsAdvisor.mapsAdvisor.response
 
-import org.mapsAdvisor.mapsAdvisor.model.PlaceFeedback
-import org.mapsAdvisor.mapsAdvisor.model.RouteFeedback
+import org.mapsAdvisor.mapsAdvisor.entity.PlaceFeedback
 
 class PlaceFeedbackResponse(
     val id: String,
-    val routeId: String,
+    val placeId: String,
     val personId: String,
     val grade: Int,
 ) {
@@ -13,7 +12,7 @@ class PlaceFeedbackResponse(
         fun fromEntity(placeFeedback: PlaceFeedback): PlaceFeedbackResponse =
             PlaceFeedbackResponse(
                 id = placeFeedback.id!!,
-                routeId = placeFeedback.placeId,
+                placeId = placeFeedback.placeId,
                 personId = placeFeedback.grade.personId,
                 grade = placeFeedback.grade.grade,
             )

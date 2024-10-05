@@ -1,10 +1,12 @@
 package org.mapsAdvisor.mapsAdvisor.service
 
-import org.mapsAdvisor.mapsAdvisor.model.Person
-import org.mapsAdvisor.mapsAdvisor.model.Role
+import org.mapsAdvisor.mapsAdvisor.entity.Person
+import org.mapsAdvisor.mapsAdvisor.entity.Role
+import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.repository.PersonRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
 import org.mapsAdvisor.mapsAdvisor.request.PersonRequest
+import org.springframework.dao.DataAccessException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
@@ -14,28 +16,35 @@ class PersonService(
     private val personRepository: PersonRepository,
     private val placeRepository: PlaceRepository,
 
-) {
-    fun createPerson(request: PersonRequest): Person =
-        personRepository.save(
-            Person(
-                name = request.name,
-                username = request.username,
-                password = request.password,
-                role = Role.valueOf(request.role.uppercase()),
-                placesOwned = request.placesOwned,
-                registrationDate = Instant.now(),
+    ) {
+    fun createPerson(request: PersonRequest): Person {
+        if (personRepository.existsByUsername(request.username)) {
+            throw IllegalArgumentException("User with username ${request.username} already exists")
+        }
+
+        return try {
+            personRepository.save(
+                Person(
+                    name = request.name,
+                    username = request.username,
+                    password = request.password,
+                    role = Role.valueOf(request.role.uppercase()),
+                    placesOwned = request.placesOwned,
+                    registrationDate = Instant.now(),
+                )
             )
-        )
+        } catch (ex: DataAccessException) {
+            throw IllegalStateException("Failed to create user due to a database error", ex)
+        }
+    }
 
     @Transactional
     fun assignPlaceToUser(personId: String, placeId: String): PersonWithPlacesResponse {
-        val person = personRepository.findById(personId).orElseThrow {
-            throw IllegalArgumentException("Person with id $personId not found")
-        }
+        val person = personRepository.findById(personId)
+            .orElseThrow { NotFoundException("Person with id $personId not found") }
 
-        val place = placeRepository.findById(placeId).orElseThrow {
-            throw IllegalArgumentException("Place with id $placeId not found")
-        }
+        val place = placeRepository.findById(placeId)
+            .orElseThrow { NotFoundException("Place with id $placeId not found") }
 
         if (place.owners.contains(personId)) {
             throw IllegalStateException("Person already owns this place")
@@ -45,7 +54,7 @@ class PersonService(
             person.role = Role.OWNER
         }
 
-        person.placesOwned = person.placesOwned + placeId
+        person.placesOwned += placeId
         place.owners = listOf(personId)
 
         personRepository.save(person)
@@ -54,5 +63,19 @@ class PersonService(
         val places = placeRepository.findAllById(person.placesOwned)
 
         return PersonWithPlacesResponse.fromEntities(person, places)
+    }
+
+    @Transactional
+    fun deletePersonById(personId: String) {
+        val personToDelete = personRepository.findById(personId)
+            .orElseThrow { NotFoundException("Person with id $personId not found") }
+
+        try {
+            personRepository.delete(personToDelete)
+        } catch (ex: DataAccessException) {
+            throw IllegalStateException("Failed to delete user due to a database error", ex)
+        }
+
+        placeRepository.deleteAllByOwnersContains(personId)
     }
 }

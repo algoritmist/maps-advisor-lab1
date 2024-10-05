@@ -31,23 +31,19 @@ class FeedbackController(
     @GetMapping("/route")
     fun getRouteFeedbacks(
         @RequestParam routeId: String,
-        @RequestParam(required = false, defaultValue = "0") page: Int
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "50") size: Int
     ): ResponseEntity<Page<RouteFeedbackResponse>> {
-        val feedbacks = feedbackService.getRouteFeedbacks(routeId, page)
+        val feedbacks = feedbackService.getRouteFeedbacks(routeId, page, size)
         return ResponseEntity.ok(
             feedbacks.map { RouteFeedbackResponse.fromEntity(it) }
         )
-
     }
 
     @DeleteMapping("/route/{feedbackId}")
     fun deleteRouteFeedback(@PathVariable feedbackId: String): ResponseEntity<Void> {
-        return try {
-            feedbackService.deleteRouteFeedback(feedbackId)
-            ResponseEntity.noContent().build()
-        } catch (e: NotFoundException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-        }
+        feedbackService.deleteRouteFeedback(feedbackId)
+        return ResponseEntity.noContent().build()
 
     }
 
@@ -64,9 +60,10 @@ class FeedbackController(
     @GetMapping("/place")
     fun getPlaceFeedbacks(
         @RequestParam routeId: String,
-        @RequestParam(required = false, defaultValue = "0") page: Int
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "50") size: Int
     ): ResponseEntity<Page<PlaceFeedbackResponse>> {
-        val feedbacks = feedbackService.getPlaceFeedbacks(routeId, page)
+        val feedbacks = feedbackService.getPlaceFeedbacks(routeId, page, size)
         return ResponseEntity.ok(
             feedbacks.map { PlaceFeedbackResponse.fromEntity(it) }
         )
@@ -74,12 +71,7 @@ class FeedbackController(
 
     @DeleteMapping("/place/{feedbackId}")
     fun deletePlaceFeedback(@PathVariable feedbackId: String): ResponseEntity<Void> {
-        return try {
-            feedbackService.deletePlaceFeedback(feedbackId)
-            ResponseEntity.noContent().build()
-        } catch (e: NotFoundException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-        }
+        feedbackService.deletePlaceFeedback(feedbackId)
+        return ResponseEntity.noContent().build()
     }
-
 }

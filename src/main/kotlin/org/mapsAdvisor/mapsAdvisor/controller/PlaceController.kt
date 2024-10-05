@@ -31,9 +31,10 @@ class PlaceController(
 
     @GetMapping
     fun findAllPlaces(
-        @RequestParam(required = false, defaultValue = "0") page: Int
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "50") size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        val places = placeService.findAll(page)
+        val places = placeService.findAll(page, size)
 
         return ResponseEntity
             .ok(
@@ -42,15 +43,12 @@ class PlaceController(
     }
 
     @GetMapping("/{id}")
-    fun findPlaceById(
-        @PathVariable id: String,
-    ): ResponseEntity<PlaceResponse> {
-        return try {
-            val place = placeService.findById(id)
-            ResponseEntity.ok(PlaceResponse.fromEntity(place))  // 200 OK
-        } catch (e: NotFoundException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).build()  // 404 Not Found
-        }
+    fun findPlaceById(@PathVariable id: String): ResponseEntity<PlaceResponse> {
+        val place = placeService.findById(id)
+        return ResponseEntity
+            .ok(
+                PlaceResponse.fromEntity(place)
+            )
     }
 
     @GetMapping("/near")
@@ -58,9 +56,10 @@ class PlaceController(
         @RequestParam @DecimalMin("-90.0") @DecimalMax("90.0") latitude: Double,
         @RequestParam @DecimalMin("-180.0") @DecimalMax("180.0") longitude: Double,
         @RequestParam(required = false, defaultValue = "5.0") distanceKm: Double,
-        @RequestParam(required = false, defaultValue = "0") page: Int
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "50") size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        val places = placeService.findByLocationNear(latitude, longitude, distanceKm, page)
+        val places = placeService.findByLocationNear(latitude, longitude, distanceKm, page, size)
         val totalPlaces = placeService.countAll()
 
         return ResponseEntity
@@ -75,9 +74,10 @@ class PlaceController(
         @RequestParam @DecimalMin("-180.0") @DecimalMax("180.0") longitude: Double,
         @RequestParam(required = false, defaultValue = "5.0") distanceKm: Double,
         @RequestParam tag: String,
-        @RequestParam(required = false, defaultValue = "0") page: Int
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "50") size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        val companies = placeService.findNearbyPlacesWithTag(latitude, longitude, distanceKm, tag, page)
+        val companies = placeService.findNearbyPlacesWithTag(latitude, longitude, distanceKm, tag, page, size)
 
         return ResponseEntity
             .ok(
@@ -91,9 +91,10 @@ class PlaceController(
         @RequestParam @DecimalMin("-180.0") @DecimalMax("180.0") longitude: Double,
         @RequestParam(required = false, defaultValue = "5.0") distanceKm: Double,
         @RequestParam name: String,
-        @RequestParam(required = false, defaultValue = "0") page: Int
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "50") size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        val companies = placeService.findNearbyPlacesByName(latitude, longitude, distanceKm, name, page)
+        val companies = placeService.findNearbyPlacesByName(latitude, longitude, distanceKm, name, page, size)
 
         return ResponseEntity
             .ok(
@@ -102,12 +103,8 @@ class PlaceController(
     }
 
     @DeleteMapping("/{id}")
-    fun deletePlace(@NotBlank @PathVariable id: String): ResponseEntity<Void> {
-        return try {
-            placeService.deleteById(id)
-            ResponseEntity.noContent().build()
-        } catch (e: NotFoundException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-        }
+    fun deletePlace(@PathVariable id: String): ResponseEntity<Void> {
+        placeService.deleteById(id)
+        return ResponseEntity.noContent().build()
     }
 }

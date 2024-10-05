@@ -1,0 +1,60 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "8",
+        "author": "mongo",
+        "labels": "createCollectionLabel",
+        "context": "createCollectionContext",
+        "comment": "Create PlaceFeedback collection with validation",
+        "changes": [
+          {
+            "createCollection": {
+              "collectionName": "place_feedback",
+              "options": {
+                "$rawJson": {
+                  "validator": {
+                    "$jsonSchema": {
+                      "bsonType": "object",
+                      "required": [
+                        "place_id",
+                        "grade"
+                      ],
+                      "properties": {
+                        "place_id": {
+                          "bsonType": "string",
+                          "description": "The ID of the place being feedbacked"
+                        },
+                        "grade": {
+                          "bsonType": "object",
+                          "required": [
+                            "person_id",
+                            "grade"
+                          ],
+                          "properties": {
+                            "person_id": {
+                              "bsonType": "string",
+                              "description": "The ID of the person providing the feedback"
+                            },
+                            "grade": {
+                              "bsonType": "int",
+                              "minimum": 1,
+                              "maximum": 5,
+                              "description": "The feedback grade (1 to 5)"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "validationAction": "warn",
+                  "validationLevel": "strict"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

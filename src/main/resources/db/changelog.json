@@ -1,0 +1,20 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "3",
+        "author": "mongo",
+        "labels": "createCollectionLabel",
+        "context": "createCollectionContext",
+        "comment": "create_collection_comment",
+        "changes": [
+          {
+            "createCollection": {
+              "collectionName": "qwerty"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

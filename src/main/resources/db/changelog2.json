@@ -1,0 +1,53 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "5",
+        "author": "mongo",
+        "labels": "createCollectionLabel",
+        "context": "createCollectionContext",
+        "comment": "Create Route collection with validation",
+        "changes": [
+          {
+            "createCollection": {
+              "collectionName": "route",
+              "options": {
+                "$rawJson": {
+                  "validator": {
+                    "$jsonSchema": {
+                      "bsonType": "object",
+                      "required": [
+                        "name",
+                        "places"
+                      ],
+                      "properties": {
+                        "name": {
+                          "bsonType": "string",
+                          "description": "The name of the route"
+                        },
+                        "description": {
+                          "bsonType": "string",
+                          "description": "A brief description of the route"
+                        },
+                        "places": {
+                          "bsonType": "array",
+                          "items": {
+                            "bsonType": "string",
+                            "description": "References to places by ObjectId"
+                          },
+                          "description": "List of place IDs associated with the route"
+                        }
+                      }
+                    }
+                  },
+                  "validationAction": "warn",
+                  "validationLevel": "strict"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

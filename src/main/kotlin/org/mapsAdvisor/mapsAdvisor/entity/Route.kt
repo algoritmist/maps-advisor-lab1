@@ -1,8 +1,7 @@
-package org.mapsAdvisor.mapsAdvisor.model
+package org.mapsAdvisor.mapsAdvisor.entity
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.core.mapping.Field
 
 @Document("route")
 data class Route(
@@ -10,6 +9,5 @@ data class Route(
     val id: String? = null,
     var name: String,
     var description: String,
-    @Field("places")
     var places: List<String> = listOf() // references
 )

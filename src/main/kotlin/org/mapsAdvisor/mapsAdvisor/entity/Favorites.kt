@@ -1,17 +1,25 @@
-package org.mapsAdvisor.mapsAdvisor.model
+package org.mapsAdvisor.mapsAdvisor.entity
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 
-@Document("place_feedback")
-data class PlaceFeedback(
+@Document("favorites")
+data class FavoriteEntity(
     @Id
     val id: String? = null,
+
+    @Field("person_id")
+    var personId: String,
 
     @Field("place_id")
     var placeId: String,
 
-    @Field("grade")
-    var grade: Grade
+    var favorites: Favorite
 )
+
+enum class Favorite {
+    HOME,
+    WORK,
+    ENTERTAINMENT,
+}

@@ -10,9 +10,12 @@ data class PlaceRequest(
 
     @field:Valid
     val coordinates: Coordinates,
+
     @field:Size(max = 10, message = "Не более 10 тегов")
     val tags: List<String> = listOf(),
+
     val owners: List<String> = listOf(),
+
     @field:Size(max = 500, message = "Информация должна быть не более 500 символов")
     val info: String? = null
 )

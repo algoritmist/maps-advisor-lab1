@@ -5,8 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import java.time.Instant
 
-typealias PlaceId = String
-
 @Document("person")
 data class Person(
     @Id
@@ -16,7 +14,7 @@ data class Person(
     var password: String,
     var role: Role,
     @Field("places_owned")
-    var placesOwned: List<PlaceId> = listOf(), // references
+    var placesOwned: List<String> = listOf(), // references
     @Field("registration_date")
     var registrationDate: Instant,
 )

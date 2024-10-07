@@ -22,7 +22,7 @@ data class Place(
     @GeoSpatialIndexed(name = "coordinates", type = GeoSpatialIndexType.GEO_2DSPHERE)
     var coordinates: GeoJsonPoint,
 
-    @field:Size(max = 10, message = "Не более 10 тегов")
+    @Size(max = 10)
     var tags: List<String> = listOf(),
     var owners: List<PersonId> = listOf(), // references
     var info: String? = null

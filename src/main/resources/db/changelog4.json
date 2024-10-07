@@ -1,0 +1,51 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "7",
+        "author": "mongo",
+        "labels": "createCollectionLabel",
+        "context": "createCollectionContext",
+        "comment": "Create Favorites collection with validation",
+        "changes": [
+          {
+            "createCollection": {
+              "collectionName": "favorites",
+              "options": {
+                "$rawJson": {
+                  "validator": {
+                    "$jsonSchema": {
+                      "bsonType": "object",
+                      "required": [
+                        "person_id",
+                        "place_id",
+                        "favorites"
+                      ],
+                      "properties": {
+                        "person_id": {
+                          "bsonType": "string",
+                          "description": "The ID of the person who favorites the place"
+                        },
+                        "place_id": {
+                          "bsonType": "string",
+                          "description": "The ID of the place that is favorited"
+                        },
+                        "favorites": {
+                          "bsonType": "string",
+                          "enum": ["HOME", "WORK", "ENTERTAINMENT"],
+                          "description": "The type of favorite category"
+                        }
+                      }
+                    }
+                  },
+                  "validationAction": "warn",
+                  "validationLevel": "strict"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

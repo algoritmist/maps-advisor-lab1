@@ -1,5 +1,6 @@
 package org.mapsAdvisor.mapsAdvisor
 
+import junit.framework.TestCase.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -20,6 +21,7 @@ import org.mapsAdvisor.mapsAdvisor.service.PersonService
 import org.mapsAdvisor.mapsAdvisor.service.PlaceService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
@@ -37,12 +39,23 @@ class FavoritesServiceTest {
         private lateinit var placeService: PlaceService
 
         private lateinit var baeldung: Person
+        private lateinit var tsopa: Person
+
         private lateinit var itmo: Place
+        private lateinit var hermitage: Place
 
         private val baeldungRequest = PersonRequest(
             name = "eugene",
             username = "baeldung",
             password = "baeldung",
+            role = Role.USER.name,
+            placesOwned = listOf()
+        )
+
+        private val tsopaRequest = PersonRequest(
+            name = "tsopa",
+            username = "tsopa",
+            password = "tsopa",
             role = Role.USER.name,
             placesOwned = listOf()
         )
@@ -55,11 +68,21 @@ class FavoritesServiceTest {
             info = "The best university in the world:)"
         )
 
+        private val hermitageRequest = PlaceRequest(
+            name = "Hermitage museum",
+            coordinates = Coordinates(59.939864, 59.939864),
+            tags = listOf("museum"),
+            owners = listOf(),
+            info = "The famous museum of St. Petersburg"
+        )
+
         @JvmStatic
         @BeforeAll
         fun beforeAll() {
             baeldung = personService.createPerson(baeldungRequest)
+            tsopa = personService.createPerson(tsopaRequest)
             itmo = placeService.createPlace(itmoRequest)
+            hermitage = placeService.createPlace(hermitageRequest)
         }
     }
 
@@ -125,7 +148,26 @@ class FavoritesServiceTest {
 
     @Test
     fun getFavoritesByPersonId() {
+        val workRequest = FavoritesRequest(
+            personId = baeldung.id!!,
+            placeId = itmo.id!!,
+            favoriteType = "WORK"
+        )
 
+        val entertainmentRequest = FavoritesRequest(
+            personId = baeldung.id!!,
+            placeId = itmo.id!!,
+            favoriteType = "ENTERTAINMENT"
+        )
+        val work = favoritesService.saveFavorite(workRequest)
+        val entertainment = favoritesService.saveFavorite(entertainmentRequest)
+        val favorites = favoritesService.getFavoritesByPersonId(baeldung.id!!, 50, 40)
+        assertEquals(2, favorites.size)
+        assertContains(favorites, work)
+        assertContains(favorites, entertainment)
+
+        val tsopaFavorites = favoritesService.getFavoritesByPersonId(tsopa.id!!, 50, 40)
+        assertTrue(tsopaFavorites.isEmpty())
     }
 
     @Test

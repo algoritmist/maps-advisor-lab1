@@ -26,21 +26,3 @@ services:
       start_period: 5s
     tty: true
     stdin_open: true
-
-
-
-  server:
-    container_name: server
-    image: eclipse-temurin:21-jdk-alpine
-    environment:
-      - DATASOURCE_URL=jdbc:postgresql://db:5432/mydatabase
-      - DATASOURCE_DATABASE=mudatabase
-      - DATASOURCE_USERNAME=yourusername
-      - DATASOURCE_PASSWORD=yourpassword
-      - DATASOURCE_AUTHSOURCE=admin
-    volumes:
-        - ./server/build/libs/server-0.0.1.jar:/server.jar
-    command: [ "java", "-jar", "/botalka.jar" ]
-    restart: unless-stopped
-    depends_on:
-      - mongo

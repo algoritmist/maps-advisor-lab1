@@ -1,0 +1,74 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "6",
+        "author": "mongo",
+        "labels": "createCollectionLabel",
+        "context": "createCollectionContext",
+        "comment": "Create Person collection with validation",
+        "changes": [
+          {
+            "createCollection": {
+              "collectionName": "person",
+              "options": {
+                "$rawJson": {
+                  "validator": {
+                    "$jsonSchema": {
+                      "bsonType": "object",
+                      "required": [
+                        "name",
+                        "username",
+                        "password",
+                        "role",
+                        "registration_date"
+                      ],
+                      "properties": {
+                        "name": {
+                          "bsonType": "string",
+                          "minLength": 1,
+                          "maxLength": 255,
+                          "description": "The person's name"
+                        },
+                        "username": {
+                          "bsonType": "string",
+                          "minLength": 1,
+                          "maxLength": 255,
+                          "description": "The person's username, unique identifier"
+                        },
+                        "password": {
+                          "bsonType": "string",
+                          "minLength": 6,
+                          "description": "The person's password, must be at least 6 characters long"
+                        },
+                        "role": {
+                          "bsonType": "string",
+                          "enum": ["USER", "ADMIN", "OWNER"],
+                          "description": "The role of the person"
+                        },
+                        "places_owned": {
+                          "bsonType": "array",
+                          "items": {
+                            "bsonType": "string",
+                            "description": "References to places owned by the person"
+                          },
+                          "description": "List of place IDs owned by the person"
+                        },
+                        "registration_date": {
+                          "bsonType": "date",
+                          "description": "The registration date of the person"
+                        }
+                      }
+                    }
+                  },
+                  "validationAction": "warn",
+                  "validationLevel": "strict"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

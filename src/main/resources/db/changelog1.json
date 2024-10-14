@@ -1,0 +1,73 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "4",
+        "author": "mongo",
+        "labels": "createCollectionLabel",
+        "context": "createCollectionContext",
+        "comment": "Create Place collection with validation",
+        "changes": [
+          {
+            "createCollection": {
+              "collectionName": "place",
+              "options": {
+                "$rawJson": {
+                  "validator": {
+                    "$jsonSchema": {
+                      "bsonType": "object",
+                      "required": [
+                        "name",
+                        "coordinates"
+                      ],
+                      "properties": {
+                        "name": {
+                          "bsonType": "string",
+                          "minLength": 3,
+                          "maxLength": 510,
+                          "description": "The name of the place"
+                        },
+                        "coordinates": {
+                          "bsonType": "object",
+                          "properties": {
+                            "type": { "enum": ["Point"] },
+                            "coordinates": {
+                              "bsonType": "array",
+                              "items": [
+                                { "bsonType": "double" },
+                                { "bsonType": "double" }
+                              ],
+                              "description": "GeoJSON point coordinates"
+                            }
+                          },
+                          "description": "The coordinates of the place"
+                        },
+                        "tags": {
+                          "bsonType": "array",
+                          "items": { "bsonType": "string" },
+                          "maxItems": 10,
+                          "description": "Tags related to the place"
+                        },
+                        "owners": {
+                          "bsonType": "array",
+                          "items": { "bsonType": "string" },
+                          "description": "References to the owners of the place"
+                        },
+                        "info": {
+                          "bsonType": ["string", "null"],
+                          "description": "Optional information about the place"
+                        }
+                      }
+                    }
+                  },
+                  "validationAction": "warn",
+                  "validationLevel": "strict"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

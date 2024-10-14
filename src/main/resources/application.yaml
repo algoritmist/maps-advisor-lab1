@@ -2,9 +2,19 @@ server:
     port: 8888
 spring:
     data:
-        redis:
-            database: 0
-            host: "localhost"
-            port: 6379
-            username: ${REDIS_USER}
-            password: ${REDIS_USER_PASSWORD}
+        mongodb:
+            url: mongodb://mongo:mongo@localhost/test?authSource=admin
+            database: testbase
+            authentication-database: admin
+            replica-set-name: myReplicaSet
+
+app:
+    datasource:
+        url: mongodb://localhost:27017
+        db: testbase
+        username: mongo
+        password: mongo
+        authSource: admin
+
+api:
+    prefix: /api/v1

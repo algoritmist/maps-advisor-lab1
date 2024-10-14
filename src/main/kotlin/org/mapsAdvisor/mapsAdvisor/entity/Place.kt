@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexType
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed
 import org.springframework.data.mongodb.core.mapping.Document
 
+typealias PersonId = String
+
 @Document("place")
 data class Place(
     @Id
@@ -20,8 +22,8 @@ data class Place(
 
     @Size(max = 10)
     var tags: List<String> = listOf(),
+    var owners: List<PersonId> = listOf(), // references
 
-    var owners: List<String> = listOf(), // references
     @Size(max = 500)
     var info: String? = null
 )

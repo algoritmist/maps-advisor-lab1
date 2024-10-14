@@ -6,9 +6,12 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
+import org.springframework.stereotype.Repository
 
+@Repository
 interface PlaceRepository : MongoRepository<Place, String> {
     override fun findAll(pageable: Pageable): Page<Place>
+
     @Query("{location:{\$nearSphere:{\$geometry:{type:'Point',coordinates:[?1,?0]},\$minDistance:1,\$maxDistance:1000}}}")
     fun findAllByCoordinates(
         latitude: Double,

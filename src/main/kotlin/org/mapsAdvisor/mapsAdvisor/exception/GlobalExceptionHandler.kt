@@ -29,7 +29,7 @@ class GlobalExceptionHandler {
         MissingServletRequestPartException::class,
         HttpMessageConversionException::class,
         HttpMediaTypeNotSupportedException::class, // unsupported content-type
-        IllegalArgumentException::class
+        //IllegalArgumentException::class
     )
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleBadRequestExceptions(

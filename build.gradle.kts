@@ -5,7 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.6"
 }
 
-group = "org.mapsAdvisor"
+group = "org.mapsAdvisor.mapsAdvisor"
 version = "0.0.1-SNAPSHOT"
 
 java {
@@ -18,6 +18,8 @@ repositories {
 	mavenCentral()
 }
 
+val mockitoKotlinVersion by extra("5.3.1")
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
@@ -27,6 +29,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("org.testcontainers:testcontainers")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     // https://mvnrepository.com/artifact/org.testcontainers/testcontainers
     testImplementation("org.testcontainers:testcontainers:1.20.0")

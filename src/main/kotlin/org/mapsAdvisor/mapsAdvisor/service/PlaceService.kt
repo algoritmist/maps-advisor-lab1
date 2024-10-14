@@ -6,7 +6,7 @@ import org.mapsAdvisor.mapsAdvisor.repository.FavoritesRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PersonRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceFeedbackRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
-import org.mapsAdvisor.mapsAdvisor.request.PlaceRequest
+import org.mapsAdvisor.mapsAdvisor.request.CreatePlaceRequest
 import org.springframework.dao.DataAccessException
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint
@@ -20,14 +20,14 @@ class PlaceService(
     private val personRepository: PersonRepository,
     private val favoritesRepository: FavoritesRepository
 ) {
-    @Transactional
-    fun createPlace(request: PlaceRequest): Place {
+    fun createPlace(request: CreatePlaceRequest): Place {
         val owners = personRepository.findAllById(request.owners)
         if (owners.size != request.owners.size) {
             throw NotFoundException("One or more owners not found")
         }
         val existingPlace = placeRepository.findByCoordinatesAndOwnersContaining(
-            GeoJsonPoint(request.coordinates.longitude, request.coordinates.latitude),
+            request.coordinates.longitude,
+            request.coordinates.latitude,
             request.owners
         )
         if (existingPlace != null) {
@@ -113,9 +113,5 @@ class PlaceService(
         } catch (ex: DataAccessException) {
             throw IllegalStateException("Failed to delete place or associated records", ex)
         }
-    }
-
-    fun countAll(): Long {
-        return placeRepository.count()
     }
 }

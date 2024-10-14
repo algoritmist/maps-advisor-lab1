@@ -4,7 +4,7 @@ import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.entity.Route
 import org.mapsAdvisor.mapsAdvisor.repository.RouteFeedbackRepository
 import org.mapsAdvisor.mapsAdvisor.repository.RouteRepository
-import org.mapsAdvisor.mapsAdvisor.request.RouteRequest
+import org.mapsAdvisor.mapsAdvisor.request.CreateRouteRequest
 import org.springframework.dao.DataAccessException
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -15,7 +15,7 @@ class RouteService(
     private val routeRepository: RouteRepository,
     private val routeFeedbackRepository: RouteFeedbackRepository
 ) {
-    fun createRoute(request: RouteRequest): Route {
+    fun createRoute(request: CreateRouteRequest): Route {
         return try {
             routeRepository.save(
                 Route(

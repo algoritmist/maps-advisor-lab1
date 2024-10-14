@@ -89,17 +89,6 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-    @ExceptionHandler(IllegalArgumentException::class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ErrorMessage> {
-
-        val errorMessage = ErrorMessage(
-            HttpStatus.BAD_REQUEST.value(),
-            ex.message
-        )
-        return ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST)
-    }
-
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     fun handleInternalServerError(ex: Exception): ResponseEntity<ErrorMessage> {

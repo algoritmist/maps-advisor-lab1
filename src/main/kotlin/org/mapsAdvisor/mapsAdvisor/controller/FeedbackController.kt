@@ -1,25 +1,28 @@
 package org.mapsAdvisor.mapsAdvisor.controller
 
 import jakarta.validation.Valid
-import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
-import org.mapsAdvisor.mapsAdvisor.request.PlaceFeedbackRequest
-import org.mapsAdvisor.mapsAdvisor.request.RouteFeedbackRequest
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.PositiveOrZero
+import org.mapsAdvisor.mapsAdvisor.controller.FeedbackController.Companion.ROOT_URI
+import org.mapsAdvisor.mapsAdvisor.request.CreatePlaceFeedbackRequest
+import org.mapsAdvisor.mapsAdvisor.request.CreateRouteFeedbackRequest
 import org.mapsAdvisor.mapsAdvisor.response.PlaceFeedbackResponse
 import org.mapsAdvisor.mapsAdvisor.response.RouteFeedbackResponse
 import org.mapsAdvisor.mapsAdvisor.service.FeedbackService
-import org.springframework.data.domain.Page
+import org.mapsAdvisor.mapsAdvisor.service.MAX_PAGE_SIZE
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@CrossOrigin(origins = ["*"], maxAge = 3600)
-@RequestMapping("/api/feedback")
+@Validated
+@RequestMapping(ROOT_URI)
 class FeedbackController(
     private val feedbackService: FeedbackService
 ) {
     @PostMapping("/route")
-    fun createRouteFeedback(@Valid @RequestBody feedback: RouteFeedbackRequest): ResponseEntity<RouteFeedbackResponse> {
+    fun createRouteFeedback(@Valid @RequestBody feedback: CreateRouteFeedbackRequest): ResponseEntity<RouteFeedbackResponse> {
         val createdFeedback = feedbackService.createRouteFeedback(feedback)
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -28,13 +31,13 @@ class FeedbackController(
             )
     }
 
-    @GetMapping("/route")
+    @GetMapping("/route/{id}")
     fun getRouteFeedbacks(
-        @RequestParam routeId: String,
-        @RequestParam(required = false, defaultValue = "0") page: Int,
-        @RequestParam(required = false, defaultValue = "50") size: Int
-    ): ResponseEntity<Page<RouteFeedbackResponse>> {
-        val feedbacks = feedbackService.getRouteFeedbacks(routeId, page, size)
+        @PathVariable id: String,
+        @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
+        @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
+    ): ResponseEntity<List<RouteFeedbackResponse>> {
+        val feedbacks = feedbackService.getRouteFeedbacks(id, page, size)
         return ResponseEntity.ok(
             feedbacks.map { RouteFeedbackResponse.fromEntity(it) }
         )
@@ -48,7 +51,7 @@ class FeedbackController(
     }
 
     @PostMapping("/place")
-    fun createPlaceFeedback(@Valid @RequestBody feedback: PlaceFeedbackRequest): ResponseEntity<PlaceFeedbackResponse> {
+    fun createPlaceFeedback(@Valid @RequestBody feedback: CreatePlaceFeedbackRequest): ResponseEntity<PlaceFeedbackResponse> {
         val createdFeedback = feedbackService.createPlaceFeedback(feedback)
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -57,21 +60,25 @@ class FeedbackController(
             )
     }
 
-    @GetMapping("/place")
+    @GetMapping("/place/{id}")
     fun getPlaceFeedbacks(
-        @RequestParam routeId: String,
-        @RequestParam(required = false, defaultValue = "0") page: Int,
-        @RequestParam(required = false, defaultValue = "50") size: Int
-    ): ResponseEntity<Page<PlaceFeedbackResponse>> {
-        val feedbacks = feedbackService.getPlaceFeedbacks(routeId, page, size)
+        @PathVariable id: String,
+        @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
+        @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
+    ): ResponseEntity<List<PlaceFeedbackResponse>> {
+        val feedbacks = feedbackService.getPlaceFeedbacks(id, page, size)
         return ResponseEntity.ok(
             feedbacks.map { PlaceFeedbackResponse.fromEntity(it) }
         )
     }
 
-    @DeleteMapping("/place/{feedbackId}")
-    fun deletePlaceFeedback(@PathVariable feedbackId: String): ResponseEntity<Void> {
-        feedbackService.deletePlaceFeedback(feedbackId)
+    @DeleteMapping("/place/{id}")
+    fun deletePlaceFeedback(@PathVariable id: String): ResponseEntity<Unit> {
+        feedbackService.deletePlaceFeedback(id)
         return ResponseEntity.noContent().build()
+    }
+
+    companion object {
+        const val ROOT_URI = "\${api.prefix}/feedback"
     }
 }

@@ -5,7 +5,8 @@ import org.mapsAdvisor.mapsAdvisor.entity.Role
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.repository.PersonRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
-import org.mapsAdvisor.mapsAdvisor.request.PersonRequest
+import org.mapsAdvisor.mapsAdvisor.request.CreatePersonRequest
+import org.mapsAdvisor.mapsAdvisor.response.PersonWithPlacesResponse
 import org.springframework.dao.DataAccessException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,10 +15,14 @@ import java.time.Instant
 @Service
 class PersonService(
     private val personRepository: PersonRepository,
-    private val placeRepository: PlaceRepository,
+    private val placeRepository: PlaceRepository
+) {
+    fun getPerson(id: String): Person {
+        return personRepository.findById(id)
+            .orElseThrow { NotFoundException("Person with id $id not found") }
+    }
 
-    ) {
-    fun createPerson(request: PersonRequest): Person {
+    fun createPerson(request: CreatePersonRequest): Person {
         if (personRepository.existsByUsername(request.username)) {
             throw IllegalArgumentException("User with username ${request.username} already exists")
         }

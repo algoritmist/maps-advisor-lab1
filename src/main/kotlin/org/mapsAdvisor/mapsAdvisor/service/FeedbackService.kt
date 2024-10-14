@@ -5,9 +5,8 @@ import org.mapsAdvisor.mapsAdvisor.entity.PlaceFeedback
 import org.mapsAdvisor.mapsAdvisor.entity.RouteFeedback
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.repository.*
-import org.mapsAdvisor.mapsAdvisor.request.PlaceFeedbackRequest
-import org.mapsAdvisor.mapsAdvisor.request.RouteFeedbackRequest
-import org.springframework.data.domain.Page
+import org.mapsAdvisor.mapsAdvisor.request.CreatePlaceFeedbackRequest
+import org.mapsAdvisor.mapsAdvisor.request.CreateRouteFeedbackRequest
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -20,7 +19,7 @@ class FeedbackService(
     private val placeRepository: PlaceRepository,
     private val personRepository: PersonRepository,
 ) {
-    fun createRouteFeedback(feedback: RouteFeedbackRequest): RouteFeedback {
+    fun createRouteFeedback(feedback: CreateRouteFeedbackRequest): RouteFeedback {
         if (!routeRepository.existsById(feedback.routeId)) {
             throw NotFoundException("Route with id ${feedback.routeId} not found")
         }
@@ -38,12 +37,12 @@ class FeedbackService(
         )
     }
 
-    fun getRouteFeedbacks(routeId: String, page: Int, size: Int): Page<RouteFeedback> {
+    fun getRouteFeedbacks(routeId: String, page: Int, size: Int): List<RouteFeedback> {
         if (!routeRepository.existsById(routeId)) {
             throw NotFoundException("Route with id $routeId not found")
         }
         val pageable: Pageable = PageRequest.of(page, size)
-        return routeFeedbackRepository.findByRouteId(routeId, pageable)
+        return routeFeedbackRepository.findByRouteId(routeId, pageable).content
     }
 
     fun deleteRouteFeedback(feedbackId: String) {
@@ -53,7 +52,7 @@ class FeedbackService(
         routeFeedbackRepository.deleteById(feedbackId)
     }
 
-    fun createPlaceFeedback(feedback: PlaceFeedbackRequest): PlaceFeedback {
+    fun createPlaceFeedback(feedback: CreatePlaceFeedbackRequest): PlaceFeedback {
         if (!placeRepository.existsById(feedback.placeId)) {
             throw NotFoundException("Place with id ${feedback.placeId} not found")
         }
@@ -71,12 +70,12 @@ class FeedbackService(
         )
     }
 
-    fun getPlaceFeedbacks(placeId: String, page: Int, size: Int): Page<PlaceFeedback> {
+    fun getPlaceFeedbacks(placeId: String, page: Int, size: Int): List<PlaceFeedback> {
         if (!placeFeedbackRepository.existsById(placeId)) {
             throw NotFoundException("Place with id $placeId not found")
         }
         val pageable: Pageable = PageRequest.of(page, size)
-        return placeFeedbackRepository.findByPlaceId(placeId, pageable)
+        return placeFeedbackRepository.findByPlaceId(placeId, pageable).content
     }
 
     fun deletePlaceFeedback(feedbackId: String) {

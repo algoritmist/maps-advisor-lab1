@@ -1,8 +1,7 @@
-package org.mapsAdvisor.mapsAdvisor.service
+package org.mapsAdvisor.mapsAdvisor.response
 
 import org.mapsAdvisor.mapsAdvisor.entity.Person
 import org.mapsAdvisor.mapsAdvisor.entity.Place
-import org.mapsAdvisor.mapsAdvisor.response.PlaceResponse
 
 data class PersonWithPlacesResponse(
     val username: String,

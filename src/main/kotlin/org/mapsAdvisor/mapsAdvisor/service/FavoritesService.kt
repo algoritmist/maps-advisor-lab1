@@ -6,7 +6,7 @@ import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.repository.FavoritesRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PersonRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
-import org.mapsAdvisor.mapsAdvisor.request.FavoritesRequest
+import org.mapsAdvisor.mapsAdvisor.request.CreateFavoritesRequest
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -17,7 +17,8 @@ class FavoritesService(
     private val placeRepository: PlaceRepository,
     private val personRepository: PersonRepository,
 ) {
-    fun saveFavorite(favorite: FavoritesRequest): FavoriteEntity {
+
+    fun saveFavorite(favorite: CreateFavoritesRequest): FavoriteEntity {
         if (!placeRepository.existsById(favorite.placeId)) {
             throw NotFoundException("Place with id ${favorite.placeId} not found")
         }

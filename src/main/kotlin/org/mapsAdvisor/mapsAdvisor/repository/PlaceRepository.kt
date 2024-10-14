@@ -18,7 +18,7 @@ interface PlaceRepository : MongoRepository<Place, String> {
         pageable: Pageable
     ): Page<Place>
 
-    @Query("{location:{\$nearSphere:{\$geometry:{type:'Point',coordinates:[?1,?0]},\$minDistance:1,\$maxDistance:1000}}}")
+    @Query("{location:{\$nearSphere:{\$geometry:{type:'Point',coordinates:[?1,?0]},\$minDistance:1,\$maxDistance:1000}}, tags: {\$in: [?2]}}")
     fun findAllByCoordinatesAndTagsContaining(
         latitude: Double,
         longitude: Double,
@@ -26,7 +26,7 @@ interface PlaceRepository : MongoRepository<Place, String> {
         pageable: Pageable
     ): Page<Place>
 
-    @Query("{location:{\$nearSphere:{\$geometry:{type:'Point',coordinates:[?1,?0]},\$minDistance:1,\$maxDistance:1000}}}")
+    @Query("{location:{\$nearSphere:{\$geometry:{type:'Point',coordinates:[?1,?0]},\$minDistance:1,\$maxDistance:1000}}, name: {\$regex: ?2, \$options: 'i'}}")
     fun findAllByCoordinatesAndName(
         latitude: Double,
         longitude: Double,
@@ -34,9 +34,11 @@ interface PlaceRepository : MongoRepository<Place, String> {
         pageable: Pageable
     ): Page<Place>
 
-    @Query("{ 'coordinates' : ?0, 'owners' : ?1 }")
+    @Query("{location:{\$nearSphere:{\$geometry:{type:'Point',coordinates:[?1,?0]},\$minDistance:1,\$maxDistance:1000}}, owners: {\$in: [?2]}}")
     fun findByCoordinatesAndOwnersContaining(
-        coordinates: GeoJsonPoint, owners: List<String>,
+        latitude: Double,
+        longitude: Double,
+        owners: List<String>,
     ): Place?
 
     fun deleteAllByOwnersContains(personId: String)

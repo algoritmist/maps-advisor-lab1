@@ -15,3 +15,6 @@ app:
         username: mongo
         password: mongo
         authSource: admin
+
+api:
+    prefix: /api/v1

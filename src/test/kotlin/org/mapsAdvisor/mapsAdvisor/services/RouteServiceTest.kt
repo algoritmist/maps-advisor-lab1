@@ -2,6 +2,8 @@ package org.mapsAdvisor.mapsAdvisor.services
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mapsAdvisor.mapsAdvisor.entity.Route
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.repository.RouteFeedbackRepository
@@ -9,6 +11,8 @@ import org.mapsAdvisor.mapsAdvisor.repository.RouteRepository
 import org.mapsAdvisor.mapsAdvisor.service.RouteService
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -20,8 +24,17 @@ class RouteServiceTest {
     @Test
     fun `test createRoute successfully creates a route`(){}
 
-    @Test
-    fun `test findAll returns paginated list of routes`(){}
+    @ParameterizedTest
+    @ValueSource(ints = [10, 20, 50])
+    fun `test findAll returns paginated list of routes`(pageSize: Int){
+        val pageable = PageRequest.of(0, pageSize)
+        val list = mock<List<Route>>()
+        whenever(list.size).thenReturn(pageSize)
+        whenever(routeRepository.findAll(pageable)).thenReturn(mock<Page<Route>>())
+        whenever(routeRepository.findAll(pageable).content).thenReturn(list)
+        val listGot = routeService.findAll(0, pageSize)
+        assertEquals(list.size, listGot.size)
+    }
 
     @Test
     fun `test findById returns a route if found`(){

@@ -1,16 +1,16 @@
 server:
-    port: 8888
+    port: 8080
 spring:
     data:
         mongodb:
-            url: mongodb://mongo:mongo@localhost/test?authSource=admin
+            url: mongodb://mongo:mongo@host.docker.internal:27017/test?authSource=admin&replicaSet=rs0
             database: testbase
             authentication-database: admin
-            replica-set-name: myReplicaSet
+            replica-set-name: rs0
 
 app:
     datasource:
-        url: mongodb://localhost:27017
+        url: mongodb://host.docker.internal:27017
         db: testbase
         username: mongo
         password: mongo

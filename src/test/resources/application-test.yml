@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      url: localhost
+      url: mongo #TODO: change to mongo
       port: 1234
       database: testbase
       username: mongo

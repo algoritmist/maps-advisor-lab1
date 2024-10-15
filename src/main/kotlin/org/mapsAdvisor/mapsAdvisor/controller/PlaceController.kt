@@ -65,9 +65,16 @@ class PlaceController(
         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
         @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
     ): ResponseEntity<List<PlaceResponse>> {
+        println("got inside findByLocationNear 1")
         val places = placeService.findByLocationNear(latitude, longitude, distanceKm, page, size)
+        println("got inside findByLocationNear 2")
+
         val totalCount = places.size.toLong()
+        println("got inside findByLocationNear 3")
+
         val headers = preparePagingHeaders(totalCount, page, size)
+        println("got inside findByLocationNear 4")
+
 
         return ResponseEntity
             .ok()

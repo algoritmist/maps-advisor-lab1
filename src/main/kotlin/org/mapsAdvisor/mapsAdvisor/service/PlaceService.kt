@@ -9,6 +9,7 @@ import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
 import org.mapsAdvisor.mapsAdvisor.request.CreatePlaceRequest
 import org.springframework.dao.DataAccessException
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.geo.Point
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -21,28 +22,28 @@ class PlaceService(
     private val favoritesRepository: FavoritesRepository
 ) {
     fun createPlace(request: CreatePlaceRequest): Place {
-        val owners = personRepository.findAllById(request.owners)
+        /*val owners = personRepository.findAllById(request.owners)
         if (owners.size != request.owners.size) {
             throw NotFoundException("One or more owners not found")
-        }
-        val existingPlace = placeRepository.findByCoordinatesAndOwnersContaining(
+        }*/
+        //println("got in createPlace")
+        /*val existingPlace = placeRepository.findByCoordinatesAndOwnersContaining(
             request.coordinates.longitude,
             request.coordinates.latitude,
             request.owners
         )
         if (existingPlace != null) {
             throw IllegalArgumentException("Place has already been added to that owner")
-        }
-
+        }*/
         return placeRepository.save(
-            Place(
-                name = request.name,
-                coordinates = GeoJsonPoint(request.coordinates.longitude, request.coordinates.latitude),
-                tags = request.tags,
-                owners = request.owners,
-                info = request.info
+                Place(
+                    name = request.name,
+                    coordinates = GeoJsonPoint(request.coordinates.longitude, request.coordinates.latitude),
+                    tags = request.tags,
+                    owners = request.owners,
+                    info = request.info
+                )
             )
-        )
     }
 
     fun findAll(page: Int, size: Int): List<Place> {
@@ -62,7 +63,7 @@ class PlaceService(
         size: Int
     ): List<Place> {
         val pageable = PageRequest.of(page, size)
-        return placeRepository.findAllByCoordinates(latitude, longitude, pageable).content
+        return placeRepository.findByCoordinatesNear(Point(latitude, longitude), pageable).content
     }
 
     fun findNearbyPlacesWithTag(
@@ -74,7 +75,7 @@ class PlaceService(
         size: Int
     ): List<Place> {
         val pageable = PageRequest.of(page, size)
-        return placeRepository.findAllByCoordinatesAndTagsContaining(latitude, longitude, tag, pageable).content
+        return placeRepository.findByCoordinatesNearAndTagsContains(Point(latitude, longitude), tag, pageable).content
     }
 
     fun findNearbyPlacesByName(
@@ -86,7 +87,7 @@ class PlaceService(
         size: Int
     ): List<Place> {
         val pageable = PageRequest.of(page, size)
-        return placeRepository.findAllByCoordinatesAndName(latitude, longitude, name, pageable).content
+        return placeRepository.findByCoordinatesNearAndNameContains(Point(latitude, longitude), name, pageable).content
     }
 
     @Transactional
@@ -96,7 +97,9 @@ class PlaceService(
 
             placeRepository.delete(placeToDelete)
 
-            placeFeedbackRepository.deleteAllByPlaceId(id)
+            if(placeFeedbackRepository.existsById(id)) {
+                placeFeedbackRepository.deleteAllByPlaceId(id)
+            }
 
             val favoritesToDelete = favoritesRepository.findAllByPlaceId(id)
             favoritesToDelete.forEach { favorite ->

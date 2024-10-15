@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
 import org.springframework.data.mongodb.MongoDatabaseFactory
 import org.springframework.data.mongodb.MongoTransactionManager
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration
@@ -14,6 +15,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 
 @Configuration
+@PropertySource("classpath:mongo.properties")
 @EnableMongoRepositories(basePackages = ["org.mapsAdvisor.mapsAdvisor.repository"])
 @ComponentScan(basePackages = ["org.mapsAdvisor.mapsAdvisor.service"])
 class MongoConfig : AbstractMongoClientConfiguration() {
@@ -22,20 +24,22 @@ class MongoConfig : AbstractMongoClientConfiguration() {
         return MongoTransactionManager(dbFactory!!)
     }
 
-    @Value("\${app.datasource.url}")
+    @Value("\${mongo.url}")
     private val url: String? = null
 
-    @Value("\${app.datasource.db}")
+    @Value("\${mongo.db}")
     private val database: String? = null
 
-    @Value("\${app.datasource.username}")
+    @Value("\${mongo.user}")
     private val user: String? = null
 
-    @Value("\${app.datasource.password}")
+    @Value("\${mongo.password}")
     private val password: String? = null
 
-    @Value("\${app.datasource.authSource}")
+    @Value("\${mongo.authSource}")
     private val authSource: String? = null
+
+    override fun getMappingBasePackages() = mutableSetOf("org.mapsAdvisor.mapsAdvisor.entity")
 
     override fun getDatabaseName(): String = database!!
 

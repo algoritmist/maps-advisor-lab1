@@ -11,7 +11,7 @@ import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.repository.FavoritesRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PersonRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
-import org.mapsAdvisor.mapsAdvisor.request.FavoritesRequest
+import org.mapsAdvisor.mapsAdvisor.request.CreateFavoritesRequest
 import org.mapsAdvisor.mapsAdvisor.service.FavoritesService
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.mock
@@ -37,7 +37,7 @@ class FavoritesServiceTest {
         whenever(placeRepository.existsById(anyString())).thenReturn(false)
         whenever(personRepository.existsById(anyString())).thenReturn(true)
         assertThrows<NotFoundException> { favoritesService.saveFavorite(
-            FavoritesRequest(
+            CreateFavoritesRequest(
                 personId = UUID.randomUUID().toString(),
                 placeId = UUID.randomUUID().toString(),
                 favoriteType = Favorite.HOME.name
@@ -50,7 +50,7 @@ class FavoritesServiceTest {
         whenever(placeRepository.existsById(anyString())).thenReturn(true)
         whenever(personRepository.existsById(anyString())).thenReturn(false)
         assertThrows<NotFoundException> { favoritesService.saveFavorite(
-            FavoritesRequest(
+            CreateFavoritesRequest(
                 personId = UUID.randomUUID().toString(),
                 placeId = UUID.randomUUID().toString(),
                 favoriteType = Favorite.HOME.name

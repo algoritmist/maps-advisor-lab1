@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size
 data class CreatePersonRequest(
     @field:NotBlank(message = "name must not be blank")
     @field:Size(min = 2, max = 50, message = "name must be between 2 and 50 characters")
-    val name: String,
+    var name: String,
 
     @field:NotBlank(message = "username must not be blank")
     @field:Size(min = 3, max = 30, message = "username must be between 3 and 30 characters")

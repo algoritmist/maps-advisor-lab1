@@ -16,10 +16,13 @@ import org.mapsAdvisor.mapsAdvisor.request.CreatePlaceRequest
 import org.mapsAdvisor.mapsAdvisor.service.PlaceService
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.geo.Point
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -32,23 +35,33 @@ class PlaceServiceTest {
 
     @Test
     fun `create place should create place`(){
-        /*val personID = UUID.randomUUID().toString()
-        assertDoesNotThrow { placeService.createPlace(CreatePlaceRequest(
+        val place = Place(
+            id = UUID.randomUUID().toString(),
             name = UUID.randomUUID().toString(),
-            coordinates = Coordinates(0.0, 0.0),
+            coordinates = GeoJsonPoint(50.0, 40.0),
             tags = listOf(),
             owners = listOf(),
-            info = ""
-        )) }*/
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        whenever(placeRepository.save(any<Place>())).thenReturn(place)
+        assertEquals(place, placeService.createPlace(
+            CreatePlaceRequest(
+                name = UUID.randomUUID().toString(),
+                coordinates = Coordinates(50.0, 40.0),
+                tags = listOf(),
+                owners = listOf(),
+                info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            )
+        ))
     }
 
-    @Test
+    /*@Test
     fun `create place should throw NotFoundException`(){
 
     }
 
     @Test
-    fun `create place should throw IllegalArgumentException if already added`(){}
+    fun `create place should throw IllegalArgumentException if already added`(){}*/
 
     @ParameterizedTest
     @ValueSource(ints = [10, 20, 50])
@@ -111,18 +124,16 @@ class PlaceServiceTest {
     @ParameterizedTest
     @ValueSource(ints = [10, 20, 50])
     fun `find nearby places by name should return page`(pageSize: Int){
-        /*val latitude = 10.0
+        val latitude = 10.0
         val longitude = 20.0
         val distance = 15.0
         val name = UUID.randomUUID().toString()
-        val pageable = PageRequest.of(0, pageSize)
         val list = mock<List<Place>>()
         whenever(list.size).thenReturn(pageSize)
-        whenever(placeRepository.findByCoordinatesNearAndNameContains(Point(latitude, longitude), name, pageable)).thenReturn(mock<Page<Place>>())
-        whenever(placeRepository.findByCoordinatesNearAndNameContains(Point(latitude, longitude), name, pageable).content).thenReturn(list)
-        val listGot = placeService.findNearbyPlacesWithTag(latitude, longitude, distance, name,0, pageSize)
+        whenever(placeRepository.findByCoordinatesNearAndNameContains(any<Point>(), any<String>(), any<Pageable>())).thenReturn(mock<Page<Place>>())
+        whenever(placeRepository.findByCoordinatesNearAndNameContains(any<Point>(), any<String>(), any<Pageable>()).content).thenReturn(list)
+        val listGot = placeService.findNearbyPlacesByName(latitude, longitude, distance, name,0, pageSize)
         assertEquals(list.size, listGot.size)
-    */
     }
 
     @Test
@@ -135,10 +146,9 @@ class PlaceServiceTest {
 
     @Test
     fun `delete by id should throw NotFoundException`(){
-        /*val place = mock<Place>()
         val placeId = UUID.randomUUID().toString()
         whenever(placeRepository.findById(placeId)).thenReturn(Optional.empty())
-        assertDoesNotThrow { placeService.deleteById(placeId) }*/
+        assertThrows<NotFoundException> { placeService.deleteById(placeId) }
     }
 
     @Test

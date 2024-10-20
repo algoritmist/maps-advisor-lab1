@@ -28,34 +28,43 @@ class PersonServiceTest {
     private val placeRepository: PlaceRepository = mock<PlaceRepository>()
     private val personService = PersonService(personRepository, placeRepository)
 
-
-    private val baeldungRequest = CreatePersonRequest(
-        name ="eugene",
-        username = "baeldung",
-        password = "baeldung",
-        role = Role.USER.name,
-        placesOwned = listOf()
-    )
-
     @Test
     fun `create person should create person`(){
-        /*val person = personService.createPerson(baeldungRequest)
-        assertEquals(baeldungRequest.name, person.name)
-        assertEquals(baeldungRequest.username, person.username)
-        assertEquals(baeldungRequest.password, person.password)
-        assertEquals(Role.USER, person.role)
-        assertTrue { personRepository.existsById(person.id!!) }*/
+        val person = Person(
+            id = UUID.randomUUID().toString(),
+            name = "baeldung",
+            username = "baeldung",
+            password = "baeldung",
+            role = Role.USER,
+            placesOwned = listOf(),
+            registrationDate = Instant.now()
+        )
+
+        whenever(personRepository.save(any<Person>())).thenReturn(person)
+
+        val result = personService.createPerson(
+            CreatePersonRequest(
+                name = person.name,
+                username = person.username,
+                password = person.password,
+                role = "USER",
+                placesOwned = listOf()
+            )
+        )
+        assertEquals(person, result)
     }
 
     @Test
     fun `create person should throw IllegalArgumentException`(){
         whenever(personRepository.existsByUsername("baeldung")).thenReturn(true)
-        assertThrows<IllegalArgumentException> { personService.createPerson(baeldungRequest) }
+        val person = mock<CreatePersonRequest>()
+        person.name = "baeldung"
+        assertThrows<IllegalArgumentException> { personService.createPerson(person) }
     }
 
     @Test
     fun `assign place to user should assign place to user`(){
-        /*val person = mock<Person>()
+        val person = mock<Person>()
         person.placesOwned = listOf()
         whenever(person.id).thenReturn("__id1")
         whenever(person.username).thenReturn("baeldung")
@@ -70,7 +79,7 @@ class PersonServiceTest {
         assertEquals(person.username, personWithPlaces.username)
         assertContains(personWithPlaces.places.stream().map { p -> p.id }.toList(), place.id!!)
         assertContains(place.owners, person.id!!)
-        assertContains(person.placesOwned, place.id!!)*/
+        assertContains(person.placesOwned, place.id!!)
     }
 
     @Test

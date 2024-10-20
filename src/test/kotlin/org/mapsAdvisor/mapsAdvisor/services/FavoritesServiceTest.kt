@@ -15,12 +15,14 @@ import org.mapsAdvisor.mapsAdvisor.request.CreateFavoritesRequest
 import org.mapsAdvisor.mapsAdvisor.service.FavoritesService
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class FavoritesServiceTest {
     private val favoritesRepository = mock<FavoritesRepository>()
@@ -30,7 +32,27 @@ class FavoritesServiceTest {
     private val favoritesService = FavoritesService(favoritesRepository, placeRepository, personRepository)
 
     @Test
-    fun `test saveFavorite with valid data`(){}
+    fun `test saveFavorite with valid data`(){
+        val personId = UUID.randomUUID().toString()
+        val placeId = UUID.randomUUID().toString()
+        val favoriteId = UUID.randomUUID().toString()
+        whenever(placeRepository.existsById(placeId)).thenReturn(true)
+        whenever(personRepository.existsById(personId)).thenReturn(true)
+        val favoriteEntity = FavoriteEntity(
+            id = favoriteId,
+            personId = personId,
+            placeId = placeId,
+            favorites = Favorite.valueOf("WORK")
+        )
+        whenever(favoritesRepository.save(any<FavoriteEntity>())).thenReturn(favoriteEntity)
+        val favoriteRequest = CreateFavoritesRequest(
+            personId = personId,
+            placeId = placeId,
+            favoriteType = "WORK"
+        )
+        assertEquals(favoriteEntity, favoritesService.saveFavorite(favoriteRequest))
+        assertNotNull(favoriteEntity.id)
+    }
 
     @Test
     fun `test saveFavorite throws NotFoundException when place not found`(){
@@ -54,6 +76,19 @@ class FavoritesServiceTest {
                 personId = UUID.randomUUID().toString(),
                 placeId = UUID.randomUUID().toString(),
                 favoriteType = Favorite.HOME.name
+            )
+        ) }
+    }
+
+    @Test
+    fun `test saveFavorite throws IllegalArgumentException when favorite not found`(){
+        whenever(placeRepository.existsById(anyString())).thenReturn(true)
+        whenever(personRepository.existsById(anyString())).thenReturn(false)
+        assertThrows<IllegalArgumentException> { favoritesService.saveFavorite(
+            CreateFavoritesRequest(
+                personId = UUID.randomUUID().toString(),
+                placeId = UUID.randomUUID().toString(),
+                favoriteType = "ABACABA"
             )
         ) }
     }

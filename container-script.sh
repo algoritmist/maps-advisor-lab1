@@ -1,1 +1,0 @@
-"--replSet", "rs0", "--bind_ip_all", "--port", "27017", "&&", "echo", "\"mongo host.docker.internal\"", ">>", "/etc/hosts"

@@ -1,28 +1,77 @@
 package org.mapsAdvisor.mapsAdvisor.services
 
+import org.junit.Assert.assertFalse
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import org.mapsAdvisor.mapsAdvisor.entity.Route
+import org.mapsAdvisor.mapsAdvisor.entity.*
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
+import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
 import org.mapsAdvisor.mapsAdvisor.repository.RouteFeedbackRepository
 import org.mapsAdvisor.mapsAdvisor.repository.RouteRepository
+import org.mapsAdvisor.mapsAdvisor.request.Coordinates
+import org.mapsAdvisor.mapsAdvisor.request.CreateRouteRequest
 import org.mapsAdvisor.mapsAdvisor.service.RouteService
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 import java.util.*
 import kotlin.test.assertEquals
 
 class RouteServiceTest {
     private val routeRepository = mock<RouteRepository>()
+    private val placeRepository = mock<PlaceRepository>()
     private val routeFeedbackRepository = mock<RouteFeedbackRepository>()
     private val routeService = RouteService(routeRepository, routeFeedbackRepository)
 
     @Test
-    fun `test createRoute successfully creates a route`(){}
+    fun `test createRoute successfully creates a route`(){
+        val place1 = Place(
+            id = "__id1",
+            name = UUID.randomUUID().toString(),
+            coordinates = GeoJsonPoint(40.0, 40.0),
+            tags = listOf(),
+            owners = listOf(),
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        whenever(placeRepository.existsById(place1.id!!)).thenReturn(true)
+        val place2 = Place(
+            id = "__id2",
+            name = UUID.randomUUID().toString(),
+            coordinates = GeoJsonPoint(50.0, 50.0),
+            tags = listOf(),
+            owners = listOf(),
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        whenever(placeRepository.existsById(place2.id!!)).thenReturn(true)
+        val place3 = Place(
+            id = "__id3",
+            name = UUID.randomUUID().toString(),
+            coordinates = GeoJsonPoint(50.0, 40.0),
+            tags = listOf(),
+            owners = listOf(),
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        whenever(placeRepository.existsById(place3.id!!)).thenReturn(true)
+        val route = Route(
+            id = UUID.randomUUID().toString(),
+            name = UUID.randomUUID().toString(),
+            description = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            places = listOf(place1.id!!, place2.id!!, place3.id!!)
+        )
+        whenever(routeRepository.save(any<Route>())).thenReturn(route)
+        val request = CreateRouteRequest(
+            name = UUID.randomUUID().toString(),
+            description = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            places = listOf(place1.id!!, place2.id!!, place3.id!!)
+        )
+        assertEquals(route, routeService.createRoute(request))
+    }
 
     @ParameterizedTest
     @ValueSource(ints = [10, 20, 50])
@@ -52,7 +101,54 @@ class RouteServiceTest {
     }
 
     @Test
-    fun `test deleteById successfully deletes route and associated feedback`(){}
+    fun `test deleteById successfully deletes route and associated feedback`(){
+        val place1 = Place(
+            id = "__id1",
+            name = UUID.randomUUID().toString(),
+            coordinates = GeoJsonPoint(40.0, 40.0),
+            tags = listOf(),
+            owners = listOf(),
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        whenever(placeRepository.existsById(place1.id!!)).thenReturn(true)
+        val place2 = Place(
+            id = "__id2",
+            name = UUID.randomUUID().toString(),
+            coordinates = GeoJsonPoint(50.0, 50.0),
+            tags = listOf(),
+            owners = listOf(),
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        whenever(placeRepository.existsById(place2.id!!)).thenReturn(true)
+        val place3 = Place(
+            id = "__id3",
+            name = UUID.randomUUID().toString(),
+            coordinates = GeoJsonPoint(50.0, 40.0),
+            tags = listOf(),
+            owners = listOf(),
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        val route = Route(
+            id = UUID.randomUUID().toString(),
+            name = UUID.randomUUID().toString(),
+            description = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            places = listOf(place1.id!!, place2.id!!, place3.id!!)
+        )
+
+        routeRepository.save(route)
+        val feedbackId = UUID.randomUUID().toString()
+        routeFeedbackRepository.save(RouteFeedback(
+            id = feedbackId,
+            routeId = route.id!!,
+            grade = Grade(
+                personId = UUID.randomUUID().toString(),
+                grade = 5
+            )
+        ))
+        routeService.deleteById(route.id!!)
+        Assertions.assertFalse(routeRepository.existsById(route.id!!))
+        Assertions.assertFalse(routeFeedbackRepository.existsById(feedbackId))
+    }
 
     @Test
     fun `test deleteById throws NotFoundException if route does not exist`(){
@@ -62,5 +158,46 @@ class RouteServiceTest {
     }
 
     @Test
-    fun `test findRoutesByPlaceId returns list of routes containing the place`(){}
+    fun `test findRoutesByPlaceId returns list of routes containing the place`(){
+        val place1 = Place(
+            id = "__id1",
+            name = UUID.randomUUID().toString(),
+            coordinates = GeoJsonPoint(40.0, 40.0),
+            tags = listOf(),
+            owners = listOf(),
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        whenever(placeRepository.existsById(place1.id!!)).thenReturn(true)
+        val place2 = Place(
+            id = "__id2",
+            name = UUID.randomUUID().toString(),
+            coordinates = GeoJsonPoint(50.0, 50.0),
+            tags = listOf(),
+            owners = listOf(),
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        whenever(placeRepository.existsById(place2.id!!)).thenReturn(true)
+        val place3 = Place(
+            id = "__id3",
+            name = UUID.randomUUID().toString(),
+            coordinates = GeoJsonPoint(50.0, 40.0),
+            tags = listOf(),
+            owners = listOf(),
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        val route1 = Route(
+            id = "__id1",
+            name = UUID.randomUUID().toString(),
+            description = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            places = listOf(place1.id!!, place2.id!!, place3.id!!)
+        )
+        val route2 = Route(
+            id = "__id2",
+            name = UUID.randomUUID().toString(),
+            description = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            places = listOf(place1.id!!, place2.id!!, place3.id!!)
+        )
+        whenever(routeRepository.findAllByPlacesContains(place2.id!!)).thenReturn(listOf(route1, route2))
+        assertEquals(listOf(route1, route2), routeService.findRoutesByPlaceId(place2.id!!))
+    }
 }

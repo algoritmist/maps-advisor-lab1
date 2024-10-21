@@ -12,18 +12,17 @@ services:
       MONGO_DB_ADMIN_PASSWORD: mongo
     ports:
       - '27017:27017'
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - mongo:/data/db
     networks:
-      - backend
+      mongo-cluster:
+        ipv4_address: 111.222.32.2
     healthcheck:
-      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'host.docker.internal:27017'}]}) }" | mongosh --port 27017 --quiet
+      test: echo "rs.status()" | mongosh --port 27017 --quiet
       interval: 5s
       timeout: 30s
-      start_period: 0s
-      retries: 30
+#      start_period: 0s
+#      retries: 30
 
   mongo-express:
     image: mongo-express
@@ -31,11 +30,12 @@ services:
     ports:
       - '8082:8081'
     extra_hosts:
+      - "mongo:111.222.32.2"
       - "host.docker.internal:host-gateway"
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: mongo
       ME_CONFIG_MONGODB_ADMINPASSWORD: mongo
-      ME_CONFIG_MONGODB_URL: mongodb://mongo:mongo@mongo:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:mongo@mongo:27017/?replicaSet=rs0
       ME_CONFIG_BASICAUTH: false
     healthcheck:
       test: [ "CMD","mongosh", "--eval", "db.adminCommand('ping')" ]
@@ -46,7 +46,7 @@ services:
     tty: true
     stdin_open: true
     networks:
-      - backend
+      - mongo-cluster
 
   server:
     image: image-name
@@ -58,7 +58,7 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - backend
+      - mongo-cluster
     #working_dir:
     #  /my-project
 #    depends_on:
@@ -72,5 +72,7 @@ volumes:
   mongo:
 
 networks:
-  backend:
-    driver: bridge
+  mongo-cluster:
+    ipam:
+      config:
+        - subnet: 111.222.32.0/24

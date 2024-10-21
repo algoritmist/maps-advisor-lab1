@@ -3,14 +3,14 @@ server:
 spring:
     data:
         mongodb:
-            url: mongodb://mongo:mongo@host.docker.internal:27017/test?authSource=admin&replicaSet=rs0
+            url: mongodb://mongo:mongo@mongo:27017/testbase?authSource=admin&replicaSet=rs0&?directConnection=true
             database: testbase
             authentication-database: admin
             replica-set-name: rs0
 
 app:
     datasource:
-        url: mongodb://host.docker.internal:27017
+        url: mongodb://mongo:27017
         db: testbase
         username: mongo
         password: mongo

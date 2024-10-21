@@ -48,10 +48,10 @@ services:
     networks:
       - mongo-cluster
 
-  server:
-    image: image-name
+  spring-app:
+    image: spring2
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "mongo:111.222.32.2"
     #build:
     #  context: .
     #  dockerfile: Dockerfile
@@ -59,14 +59,14 @@ services:
       - "8080:8080"
     networks:
       - mongo-cluster
-    #working_dir:
-    #  /my-project
-#    depends_on:
-#      - mongo
-    environment:
-      DB_USERNAME: mongo
-      DB_PASSWORD: mongo
-      DB_URL: mongodb://mongo:27017/testbase?replicaSet=rs0
+    working_dir:
+      /my-project
+    depends_on:
+      - mongo
+    #environment:
+    #  DB_USERNAME: mongo
+    #  DB_PASSWORD: mongo
+    #  DB_URL: mongodb://mongo:27017/testbase?replicaSet=rs0
 
 volumes:
   mongo:

@@ -1,5 +1,5 @@
 #!/bin/bash
-mongo <<EOF
+mongosh <<EOF
 var config = {
     "_id": "rs0",
     "version": 1,
@@ -11,6 +11,7 @@ var config = {
         }
     ]
 };
-rs.reconfig(config, { force: true });
+try {rs.status()} catch(err) {rs.initiate(config)}
+rs.config(config, { force: true });
 rs.status();
 EOF

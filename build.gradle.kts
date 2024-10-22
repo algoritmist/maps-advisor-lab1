@@ -33,11 +33,14 @@ dependencies {
 	testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     // https://mvnrepository.com/artifact/org.testcontainers/testcontainers
-    testImplementation("org.testcontainers:testcontainers:1.20.0")
+    testImplementation("org.testcontainers:testcontainers:1.18.3")
     // https://mvnrepository.com/artifact/org.testcontainers/mongodb
-    testImplementation("org.testcontainers:mongodb:1.14.2")
+    testImplementation("org.testcontainers:mongodb:1.18.3")
     // https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter
-    testImplementation("org.testcontainers:junit-jupiter:1.20.2")
+    testImplementation("org.testcontainers:junit-jupiter:1.18.3")
+	// https://mvnrepository.com/artifact/de.flapdoodle.embed/de.flapdoodle.embed.mongo
+	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.35")
+
 }
 
 kotlin {

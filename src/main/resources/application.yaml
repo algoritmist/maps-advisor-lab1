@@ -8,6 +8,10 @@ spring:
             authentication-database: admin
             replica-set-name: rs0
 
+    main:
+        allow-bean-definition-overriding: true
+
+
 app:
     datasource:
         url: mongodb://mongo:27017

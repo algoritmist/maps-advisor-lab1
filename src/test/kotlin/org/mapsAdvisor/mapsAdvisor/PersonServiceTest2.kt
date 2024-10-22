@@ -1,25 +1,16 @@
 package org.mapsAdvisor.mapsAdvisor
 
+import IntegrationEnvironment
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.runner.RunWith
 import org.mapsAdvisor.mapsAdvisor.entity.Place
-import org.mapsAdvisor.mapsAdvisor.entity.Role
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
-import org.mapsAdvisor.mapsAdvisor.request.CreatePersonRequest
-import org.mapsAdvisor.mapsAdvisor.service.PersonService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringRunner
 import java.util.*
 
-@RunWith(SpringRunner::class)
+class PersonServiceTest2: IntegrationEnvironment() {
 
-@SpringBootTest
-@ActiveProfiles("test")
-class PersonServiceTest2 {
     @Autowired
     private lateinit var placeRepository: PlaceRepository
 

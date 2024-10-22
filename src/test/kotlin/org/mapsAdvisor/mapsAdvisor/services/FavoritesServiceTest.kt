@@ -82,8 +82,8 @@ class FavoritesServiceTest {
 
     @Test
     fun `test saveFavorite throws IllegalArgumentException when favorite not found`(){
-        whenever(placeRepository.existsById(anyString())).thenReturn(true)
-        whenever(personRepository.existsById(anyString())).thenReturn(false)
+        whenever(placeRepository.existsById(any<String>())).thenReturn(true)
+        whenever(personRepository.existsById(any<String>())).thenReturn(true)
         assertThrows<IllegalArgumentException> { favoritesService.saveFavorite(
             CreateFavoritesRequest(
                 personId = UUID.randomUUID().toString(),

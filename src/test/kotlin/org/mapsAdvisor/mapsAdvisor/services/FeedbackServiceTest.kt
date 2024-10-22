@@ -87,12 +87,15 @@ class FeedbackServiceTest {
     @ParameterizedTest
     @ValueSource(ints = [10, 20, 50])
     fun `test getRouteFeedbacks returns paginated route feedbacks`(pageSize: Int){
-        whenever(routeRepository.existsById(anyString())).thenReturn(true)
-        val pageRequest = PageRequest.of(0, pageSize)
-        val page = mock<Page<RouteFeedback>>()
-        whenever(routeFeedbackRepository.findByRouteId(anyString(), pageRequest)).thenReturn(page)
-        val pageGot = feedbackService.getRouteFeedbacks(UUID.randomUUID().toString(), 0, pageSize)
-        assertEquals(page.size, pageGot.size)
+        whenever(routeRepository.existsById(any<String>())).thenReturn(true)
+        val routeId = UUID.randomUUID().toString()
+        val page = PageRequest.of(0, pageSize)
+        val lst = mock<List<RouteFeedback>>()
+        whenever(lst.size).thenReturn(pageSize)
+        whenever(routeFeedbackRepository.findByRouteId(routeId, page)).thenReturn(mock<Page<RouteFeedback>>())
+        whenever(routeFeedbackRepository.findByRouteId(routeId, page).content).thenReturn(lst)
+        val lstGot = feedbackService.getRouteFeedbacks(routeId, 0, pageSize)
+        assertEquals(lst.size, lstGot.size)
     }
 
     @Test
@@ -148,12 +151,15 @@ class FeedbackServiceTest {
     @ParameterizedTest
     @ValueSource(ints = [10, 20, 50])
     fun `test getPlaceFeedbacks returns paginated place feedbacks`(pageSize: Int){
-        whenever(placeRepository.existsById(anyString())).thenReturn(true)
+        val placeId = UUID.randomUUID().toString()
+        whenever(placeFeedbackRepository.existsById(placeId)).thenReturn(true)
         val pageRequest = PageRequest.of(0, pageSize)
-        val page = mock<Page<PlaceFeedback>>()
-        whenever(placeFeedbackRepository.findByPlaceId(anyString(), pageRequest)).thenReturn(page)
-        val pageGot = feedbackService.getPlaceFeedbacks(UUID.randomUUID().toString(), 0, pageSize)
-        assertEquals(page.size, pageGot.size)
+        val lst = mock<List<PlaceFeedback>>()
+        whenever(lst.size).thenReturn(pageSize)
+        whenever(placeFeedbackRepository.findByPlaceId(placeId, pageRequest)).thenReturn(mock<Page<PlaceFeedback>>())
+        whenever(placeFeedbackRepository.findByPlaceId(placeId, pageRequest).content).thenReturn(lst)
+        val lstGot = feedbackService.getPlaceFeedbacks(placeId, 0, pageSize)
+        assertEquals(lst.size, lstGot.size)
     }
 
     @Test

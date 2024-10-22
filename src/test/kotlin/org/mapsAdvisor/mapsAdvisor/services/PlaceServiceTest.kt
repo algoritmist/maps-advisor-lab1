@@ -128,10 +128,11 @@ class PlaceServiceTest {
         val longitude = 20.0
         val distance = 15.0
         val name = UUID.randomUUID().toString()
+        val pageable = PageRequest.of(0, pageSize)
         val list = mock<List<Place>>()
         whenever(list.size).thenReturn(pageSize)
-        whenever(placeRepository.findByCoordinatesNearAndNameContains(any<Point>(), any<String>(), any<Pageable>())).thenReturn(mock<Page<Place>>())
-        whenever(placeRepository.findByCoordinatesNearAndNameContains(any<Point>(), any<String>(), any<Pageable>()).content).thenReturn(list)
+        whenever(placeRepository.findByCoordinatesNearAndNameContains(Point(latitude, longitude), name, pageable)).thenReturn(mock<Page<Place>>())
+        whenever(placeRepository.findByCoordinatesNearAndNameContains(Point(latitude, longitude), name, pageable).content).thenReturn(list)
         val listGot = placeService.findNearbyPlacesByName(latitude, longitude, distance, name,0, pageSize)
         assertEquals(list.size, listGot.size)
     }

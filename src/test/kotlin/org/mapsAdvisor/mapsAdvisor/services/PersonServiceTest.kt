@@ -15,6 +15,7 @@ import org.mapsAdvisor.mapsAdvisor.service.PersonService
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.util.*
@@ -64,22 +65,34 @@ class PersonServiceTest {
 
     @Test
     fun `assign place to user should assign place to user`(){
-        val person = mock<Person>()
-        person.placesOwned = listOf()
-        whenever(person.id).thenReturn("__id1")
-        whenever(person.username).thenReturn("baeldung")
-        whenever(personRepository.findById("__id1")).thenReturn(Optional.of(person))
+        val person = Person(
+            id = UUID.randomUUID().toString(),
+            name = "baeldung",
+            username = "baeldung",
+            password = "baeldung",
+            role = Role.USER,
+            placesOwned = listOf(),
+            registrationDate = Instant.now()
+        )
+        whenever(personRepository.findById(person.id!!)).thenReturn(Optional.of(person))
 
-        val place = mock<Place>()
-        place.owners = listOf()
-        whenever(place.id).thenReturn("__id1")
-        whenever(placeRepository.findById("__id1")).thenReturn(Optional.of(place))
+        val place = Place(
+            id = UUID.randomUUID().toString(),
+            name = UUID.randomUUID().toString(),
+            coordinates = GeoJsonPoint(50.0, 40.0),
+            tags = listOf(),
+            owners = listOf(),
+            info = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        )
+        whenever(placeRepository.findById(place.id!!)).thenReturn(Optional.of(place))
+        whenever(placeRepository.findAllById(listOf(place.id!!))).thenReturn(listOf(place))
 
-        val personWithPlaces = personService.assignPlaceToUser(person.id!!, place.id!!)
-        assertEquals(person.username, personWithPlaces.username)
-        assertContains(personWithPlaces.places.stream().map { p -> p.id }.toList(), place.id!!)
-        assertContains(place.owners, person.id!!)
+    val response = personService.assignPlaceToUser(person.id!!, place.id!!)
         assertContains(person.placesOwned, place.id!!)
+        assertEquals(person.role, Role.OWNER)
+        assertContains(place.owners, person.id!!)
+        assertEquals(response.username, person.username)
+        assertContains(response.places.stream().map { r -> r.id }.toList(), place.id!!)
     }
 
     @Test

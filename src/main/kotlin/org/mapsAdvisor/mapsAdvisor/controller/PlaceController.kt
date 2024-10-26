@@ -6,8 +6,9 @@ import jakarta.validation.constraints.DecimalMin
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.PositiveOrZero
 import org.mapsAdvisor.mapsAdvisor.controller.PlaceController.Companion.ROOT_URI
-import org.mapsAdvisor.mapsAdvisor.request.CreatePlaceRequest
-import org.mapsAdvisor.mapsAdvisor.response.PlaceResponse
+import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
+import org.mapsAdvisor.mapsAdvisor.model.request.CreatePlaceRequest
+import org.mapsAdvisor.mapsAdvisor.model.response.PlaceResponse
 import org.mapsAdvisor.mapsAdvisor.service.MAX_PAGE_SIZE
 import org.mapsAdvisor.mapsAdvisor.service.PlaceService
 import org.springframework.http.HttpStatus
@@ -34,11 +35,11 @@ class PlaceController(
     }
 
     @GetMapping
-    fun findAllPlaces(
+    fun getAllPlaces(
         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
         @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        val places = placeService.findAll(page, size)
+        val places = placeService.getAllPlaces(page, size)
         val totalCount = places.size.toLong()
         val headers = preparePagingHeaders(totalCount, page, size)
 
@@ -49,8 +50,9 @@ class PlaceController(
     }
 
     @GetMapping("/{id}")
-    fun findPlaceById(@PathVariable id: String): ResponseEntity<PlaceResponse> {
-        val place = placeService.findById(id)
+    fun getPlaceById(@PathVariable id: String): ResponseEntity<PlaceResponse> {
+        val place =
+            placeService.getPlaceById(id) ?: throw NotFoundException("Place with id $id not found")
         return ResponseEntity
             .ok(
                 PlaceResponse.fromEntity(place)
@@ -58,23 +60,16 @@ class PlaceController(
     }
 
     @GetMapping("/near")
-    fun findByLocationNear(
+    fun getPlacesNear(
         @RequestParam @DecimalMin("-90.0") @DecimalMax("90.0") latitude: Double,
         @RequestParam @DecimalMin("-180.0") @DecimalMax("180.0") longitude: Double,
         @RequestParam(required = false, defaultValue = "5.0") distanceKm: Double,
         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
         @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        println("got inside findByLocationNear 1")
-        val places = placeService.findByLocationNear(latitude, longitude, distanceKm, page, size)
-        println("got inside findByLocationNear 2")
-
+        val places = placeService.getPlacesNear(latitude, longitude, distanceKm, page, size)
         val totalCount = places.size.toLong()
-        println("got inside findByLocationNear 3")
-
         val headers = preparePagingHeaders(totalCount, page, size)
-        println("got inside findByLocationNear 4")
-
 
         return ResponseEntity
             .ok()
@@ -83,7 +78,7 @@ class PlaceController(
     }
 
     @GetMapping("/tag")
-    fun findNearbyPlacesWithTag(
+    fun getPlacesNearByTag(
         @RequestParam @DecimalMin("-90.0") @DecimalMax("90.0") latitude: Double,
         @RequestParam @DecimalMin("-180.0") @DecimalMax("180.0") longitude: Double,
         @RequestParam(required = false, defaultValue = "5.0") distanceKm: Double,
@@ -91,7 +86,7 @@ class PlaceController(
         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
         @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        val companies = placeService.findNearbyPlacesWithTag(latitude, longitude, distanceKm, tag, page, size)
+        val companies = placeService.getPlacesNearByTag(latitude, longitude, distanceKm, tag, page, size)
 
         return ResponseEntity
             .ok(
@@ -100,7 +95,7 @@ class PlaceController(
     }
 
     @GetMapping("/name")
-    fun findNearbyPlacesByName(
+    fun getPlacesNearByName(
         @RequestParam @DecimalMin("-90.0") @DecimalMax("90.0") latitude: Double,
         @RequestParam @DecimalMin("-180.0") @DecimalMax("180.0") longitude: Double,
         @RequestParam(required = false, defaultValue = "5.0") distanceKm: Double,
@@ -108,7 +103,7 @@ class PlaceController(
         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
         @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        val companies = placeService.findNearbyPlacesByName(latitude, longitude, distanceKm, name, page, size)
+        val companies = placeService.getPlacesNearByName(latitude, longitude, distanceKm, name, page, size)
 
         return ResponseEntity
             .ok(

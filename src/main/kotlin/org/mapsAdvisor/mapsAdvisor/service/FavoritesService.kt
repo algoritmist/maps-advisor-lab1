@@ -1,12 +1,11 @@
 package org.mapsAdvisor.mapsAdvisor.service
 
-import org.mapsAdvisor.mapsAdvisor.entity.Favorite
-import org.mapsAdvisor.mapsAdvisor.entity.FavoriteEntity
+import org.mapsAdvisor.mapsAdvisor.exception.DuplicateException
+import org.mapsAdvisor.mapsAdvisor.model.entity.Favorite
+import org.mapsAdvisor.mapsAdvisor.model.entity.FavoriteEntity
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.repository.FavoritesRepository
-import org.mapsAdvisor.mapsAdvisor.repository.PersonRepository
-import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
-import org.mapsAdvisor.mapsAdvisor.request.CreateFavoritesRequest
+import org.mapsAdvisor.mapsAdvisor.model.request.CreateFavoritesRequest
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -14,17 +13,18 @@ import org.springframework.stereotype.Service
 @Service
 class FavoritesService(
     private val favoritesRepository: FavoritesRepository,
-    private val placeRepository: PlaceRepository,
-    private val personRepository: PersonRepository,
+    private val personService: UserService,
+    private val placeService: PlaceService,
 ) {
 
-    fun saveFavorite(favorite: CreateFavoritesRequest): FavoriteEntity {
-        if (!placeRepository.existsById(favorite.placeId)) {
-            throw NotFoundException("Place with id ${favorite.placeId} not found")
-        }
+    fun addToFavorites(favorite: CreateFavoritesRequest): FavoriteEntity {
+        placeService.getPlaceById(favorite.placeId)
+            ?: throw NotFoundException("Place with id ${favorite.placeId} not found")
+        personService.getUserById(favorite.personId)
+            ?: throw NotFoundException("Person with id ${favorite.personId} not found")
 
-        if (!personRepository.existsById(favorite.personId)) {
-            throw NotFoundException("Person with id ${favorite.personId} not found")
+        if (favoritesRepository.existsByPersonIdAndPlaceId(favorite.personId, favorite.placeId)) {
+            throw DuplicateException("This place is already in favorites for person with id ${favorite.personId}")
         }
 
         val favoriteType = try {
@@ -48,9 +48,9 @@ class FavoritesService(
     }
 
     fun getFavoritesByPersonId(personId: String, page: Int, size: Int): List<FavoriteEntity> {
-        if (!personRepository.existsById(personId)) {
-            throw NotFoundException("Person with id $personId not found")
-        }
+        personService.getUserById(personId)
+            ?: throw NotFoundException("Person with id $personId not found")
+
         val pageable: Pageable = PageRequest.of(page, size)
         return favoritesRepository.findByPersonId(personId, pageable).content
     }

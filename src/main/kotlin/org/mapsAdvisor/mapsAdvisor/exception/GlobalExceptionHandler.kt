@@ -29,7 +29,7 @@ class GlobalExceptionHandler {
         MissingServletRequestPartException::class,
         HttpMessageConversionException::class,
         HttpMediaTypeNotSupportedException::class, // unsupported content-type
-        //IllegalArgumentException::class
+        IllegalArgumentException::class
     )
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleBadRequestExceptions(
@@ -62,7 +62,10 @@ class GlobalExceptionHandler {
             else -> ex.message
         }
         return ResponseEntity(
-            ErrorMessage(HttpStatus.BAD_REQUEST.value(), message ?: "Bad Request", ex.message),
+            ErrorMessage(
+                message ?: "Bad Request",
+                ex.message
+            ),
             HttpStatus.BAD_REQUEST
         )
     }
@@ -71,21 +74,20 @@ class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     fun handleEntityNotFoundException(ex: NotFoundException): ResponseEntity<ErrorMessage> {
         val errorMessage = ErrorMessage(
-            HttpStatus.NOT_FOUND.value(),
             ex.message
         )
         return ResponseEntity(errorMessage, HttpStatus.NOT_FOUND)
 
     }
 
-    @ExceptionHandler(IllegalStateException::class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    fun handleIllegalStateException(ex: IllegalStateException): ResponseEntity<ErrorMessage> {
-
+    @ExceptionHandler(DuplicateException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleDuplicateException(ex: Exception): ResponseEntity<ErrorMessage> {
         val errorMessage = ErrorMessage(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            "Bad Request",
             ex.message
         )
+
         return ResponseEntity(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
@@ -93,8 +95,8 @@ class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     fun handleInternalServerError(ex: Exception): ResponseEntity<ErrorMessage> {
         val errorMessage = ErrorMessage(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            "An unexpected error occurred. Please try again later."
+            "An unexpected error occurred. Please try again later.",
+            ex.message
         )
 
         return ResponseEntity(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR)

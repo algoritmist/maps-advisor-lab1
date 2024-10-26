@@ -4,8 +4,8 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.PositiveOrZero
 import org.mapsAdvisor.mapsAdvisor.controller.FavoritesController.Companion.ROOT_URI
-import org.mapsAdvisor.mapsAdvisor.request.CreateFavoritesRequest
-import org.mapsAdvisor.mapsAdvisor.response.FavoritesResponse
+import org.mapsAdvisor.mapsAdvisor.model.request.CreateFavoritesRequest
+import org.mapsAdvisor.mapsAdvisor.model.response.FavoritesResponse
 import org.mapsAdvisor.mapsAdvisor.service.FavoritesService
 import org.mapsAdvisor.mapsAdvisor.service.MAX_PAGE_SIZE
 import org.springframework.http.HttpStatus
@@ -20,8 +20,8 @@ class FavoritesController(
     private val favoritesService: FavoritesService
 ) {
     @PostMapping
-    fun createFavorite(@Valid @RequestBody favoriteEntity: CreateFavoritesRequest): ResponseEntity<FavoritesResponse> {
-        val savedFavorite = favoritesService.saveFavorite(favoriteEntity)
+    fun addToFavorites(@Valid @RequestBody favoriteEntity: CreateFavoritesRequest): ResponseEntity<FavoritesResponse> {
+        val savedFavorite = favoritesService.addToFavorites(favoriteEntity)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(

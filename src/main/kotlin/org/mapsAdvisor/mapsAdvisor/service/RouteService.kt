@@ -1,12 +1,13 @@
 package org.mapsAdvisor.mapsAdvisor.service
 
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
-import org.mapsAdvisor.mapsAdvisor.entity.Route
+import org.mapsAdvisor.mapsAdvisor.model.entity.Route
 import org.mapsAdvisor.mapsAdvisor.repository.RouteFeedbackRepository
 import org.mapsAdvisor.mapsAdvisor.repository.RouteRepository
-import org.mapsAdvisor.mapsAdvisor.request.CreateRouteRequest
+import org.mapsAdvisor.mapsAdvisor.model.request.CreateRouteRequest
 import org.springframework.dao.DataAccessException
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,17 +17,13 @@ class RouteService(
     private val routeFeedbackRepository: RouteFeedbackRepository
 ) {
     fun createRoute(request: CreateRouteRequest): Route {
-        return try {
-            routeRepository.save(
-                Route(
-                    name = request.name,
-                    description = request.description,
-                    places = request.places
-                )
+        return routeRepository.save(
+            Route(
+                name = request.name,
+                description = request.description,
+                places = request.places
             )
-        } catch (ex: DataAccessException) {
-            throw IllegalStateException("Failed to create route due to a database error", ex)
-        }
+        )
     }
 
     fun findAll(page: Int, size: Int): List<Route> {
@@ -34,26 +31,21 @@ class RouteService(
         return routeRepository.findAll(pageable).content
     }
 
-    fun findById(id: String): Route =
-        routeRepository.findById(id)
-            .orElseThrow { NotFoundException("Route with id $id not found") }
+    fun getRouteById(id: String): Route? =
+        routeRepository.findByIdOrNull(id)
 
     @Transactional
     fun deleteById(id: String) {
-        try {
-            val routeToDelete = findById(id)
+        val routeToDelete = getRouteById(id) ?: throw NotFoundException("Route with id $id not found")
+        routeRepository.delete(routeToDelete)
 
-            routeRepository.delete(routeToDelete)
-
+        if (routeFeedbackRepository.existsByRouteId(id)) {
             routeFeedbackRepository.deleteAllByRouteId(id)
-        } catch (ex: NotFoundException) {
-            throw ex
-        } catch (ex: DataAccessException) {
-            throw IllegalStateException("Failed to delete routes or associated records", ex)
         }
     }
 
-    fun findRoutesByPlaceId(placeId: String): List<Route> {
-        return routeRepository.findAllByPlacesContains(placeId)
+    fun findRoutesByPlaceId(placeId: String, page: Int, size: Int): List<Route> {
+        val pageable = PageRequest.of(page, size)
+        return routeRepository.findAllByPlacesContains(placeId, pageable).content
     }
 }

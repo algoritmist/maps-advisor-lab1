@@ -2,11 +2,12 @@ package org.mapsAdvisor.mapsAdvisor.controller
 
 import jakarta.validation.Valid
 import org.mapsAdvisor.mapsAdvisor.controller.UserController.Companion.ROOT_URI
-import org.mapsAdvisor.mapsAdvisor.request.AssignPlaceToPersonRequest
-import org.mapsAdvisor.mapsAdvisor.request.CreatePersonRequest
-import org.mapsAdvisor.mapsAdvisor.response.PersonResponse
-import org.mapsAdvisor.mapsAdvisor.service.PersonService
-import org.mapsAdvisor.mapsAdvisor.response.PersonWithPlacesResponse
+import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
+import org.mapsAdvisor.mapsAdvisor.model.request.AssignPlaceToPersonRequest
+import org.mapsAdvisor.mapsAdvisor.model.request.CreateUserRequest
+import org.mapsAdvisor.mapsAdvisor.model.response.PersonResponse
+import org.mapsAdvisor.mapsAdvisor.model.response.PersonWithPlacesResponse
+import org.mapsAdvisor.mapsAdvisor.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -16,11 +17,11 @@ import org.springframework.web.bind.annotation.*
 @Validated
 @RequestMapping(ROOT_URI)
 class UserController(
-    private val userService: PersonService
+    private val userService: UserService
 ) {
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: String): ResponseEntity<PersonResponse> {
-        val person = userService.getPerson(id)
+        val person = userService.getUserById(id) ?: throw NotFoundException("User with id $id not found")
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
@@ -29,8 +30,8 @@ class UserController(
     }
 
     @PostMapping("/signup")
-    fun createUser(@Valid @RequestBody newUser: CreatePersonRequest): ResponseEntity<PersonResponse> {
-        val person = userService.createPerson(newUser)
+    fun createUser(@Valid @RequestBody newUser: CreateUserRequest): ResponseEntity<PersonResponse> {
+        val person = userService.createUser(newUser)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(
@@ -38,7 +39,7 @@ class UserController(
             )
     }
 
-    @PostMapping("/assign")
+    @PatchMapping("/assign")
     fun assignPlaceToUser(
         @Valid @RequestBody assignRequest: AssignPlaceToPersonRequest
     ): ResponseEntity<PersonWithPlacesResponse> {

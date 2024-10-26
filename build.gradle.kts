@@ -27,11 +27,13 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.boot:spring-boot-starter-tomcat")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.testcontainers:testcontainers")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("org.springframework.boot:spring-boot-testcontainers")
     // https://mvnrepository.com/artifact/org.testcontainers/testcontainers
     testImplementation("org.testcontainers:testcontainers:1.18.3")
     // https://mvnrepository.com/artifact/org.testcontainers/mongodb

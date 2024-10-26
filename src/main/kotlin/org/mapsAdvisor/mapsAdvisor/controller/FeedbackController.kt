@@ -4,10 +4,10 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.PositiveOrZero
 import org.mapsAdvisor.mapsAdvisor.controller.FeedbackController.Companion.ROOT_URI
-import org.mapsAdvisor.mapsAdvisor.request.CreatePlaceFeedbackRequest
-import org.mapsAdvisor.mapsAdvisor.request.CreateRouteFeedbackRequest
-import org.mapsAdvisor.mapsAdvisor.response.PlaceFeedbackResponse
-import org.mapsAdvisor.mapsAdvisor.response.RouteFeedbackResponse
+import org.mapsAdvisor.mapsAdvisor.model.request.CreatePlaceFeedbackRequest
+import org.mapsAdvisor.mapsAdvisor.model.request.CreateRouteFeedbackRequest
+import org.mapsAdvisor.mapsAdvisor.model.response.PlaceFeedbackResponse
+import org.mapsAdvisor.mapsAdvisor.model.response.RouteFeedbackResponse
 import org.mapsAdvisor.mapsAdvisor.service.FeedbackService
 import org.mapsAdvisor.mapsAdvisor.service.MAX_PAGE_SIZE
 import org.springframework.http.HttpStatus
@@ -43,9 +43,9 @@ class FeedbackController(
         )
     }
 
-    @DeleteMapping("/route/{feedbackId}")
-    fun deleteRouteFeedback(@PathVariable feedbackId: String): ResponseEntity<Void> {
-        feedbackService.deleteRouteFeedback(feedbackId)
+    @DeleteMapping("/route/{id}")
+    fun deleteRouteFeedback(@PathVariable id: String): ResponseEntity<Void> {
+        feedbackService.deleteRouteFeedback(id)
         return ResponseEntity.noContent().build()
 
     }

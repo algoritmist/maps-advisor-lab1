@@ -3,8 +3,8 @@ package org.mapsAdvisor.mapsAdvisor.controller
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.PositiveOrZero
 import org.mapsAdvisor.mapsAdvisor.controller.RouteController.Companion.ROOT_URI
-import org.mapsAdvisor.mapsAdvisor.request.CreateRouteRequest
-import org.mapsAdvisor.mapsAdvisor.response.RouteResponse
+import org.mapsAdvisor.mapsAdvisor.model.request.CreateRouteRequest
+import org.mapsAdvisor.mapsAdvisor.model.response.RouteResponse
 import org.mapsAdvisor.mapsAdvisor.service.MAX_PAGE_SIZE
 import org.mapsAdvisor.mapsAdvisor.service.RouteService
 import org.springframework.http.ResponseEntity
@@ -29,7 +29,7 @@ class RouteController(
     }
 
     @GetMapping
-    fun findAllRoutes(
+    fun getAllRoutes(
         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
         @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
     ): ResponseEntity<List<RouteResponse>> {
@@ -48,8 +48,12 @@ class RouteController(
     }
 
     @GetMapping("/by-place/{id}")
-    fun findRoutesByPlaceId(@PathVariable id: String): ResponseEntity<List<RouteResponse>> {
-        val routes = routeService.findRoutesByPlaceId(id)
+    fun getRoutesByPlaceId(
+        @PathVariable id: String,
+        @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
+        @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
+    ): ResponseEntity<List<RouteResponse>> {
+        val routes = routeService.findRoutesByPlaceId(id, page, size)
         return ResponseEntity.ok(routes.map { RouteResponse.fromEntity(it) })
     }
 

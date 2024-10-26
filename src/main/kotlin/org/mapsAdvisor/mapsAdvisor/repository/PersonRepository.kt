@@ -1,6 +1,6 @@
 package org.mapsAdvisor.mapsAdvisor.repository
 
-import org.mapsAdvisor.mapsAdvisor.entity.Person
+import org.mapsAdvisor.mapsAdvisor.model.entity.Person
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 

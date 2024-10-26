@@ -8,8 +8,8 @@ spring:
             authentication-database: admin
             replica-set-name: rs0
 
-    main:
-        allow-bean-definition-overriding: true
+    jackson:
+      property-naming-strategy: SNAKE_CASE
 
 
 app:

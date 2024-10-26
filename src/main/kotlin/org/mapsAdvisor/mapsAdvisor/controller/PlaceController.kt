@@ -8,6 +8,7 @@ import jakarta.validation.constraints.PositiveOrZero
 import org.mapsAdvisor.mapsAdvisor.controller.PlaceController.Companion.ROOT_URI
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.model.request.CreatePlaceRequest
+import org.mapsAdvisor.mapsAdvisor.model.request.UpdateDescriptionRequest
 import org.mapsAdvisor.mapsAdvisor.model.response.PlaceResponse
 import org.mapsAdvisor.mapsAdvisor.service.MAX_PAGE_SIZE
 import org.mapsAdvisor.mapsAdvisor.service.PlaceService
@@ -108,6 +109,20 @@ class PlaceController(
         return ResponseEntity
             .ok(
                 companies.map { PlaceResponse.fromEntity(it) }
+            )
+    }
+
+    @PatchMapping("/{id}/description")
+    fun updateDescription(
+        @PathVariable id: String,
+        @Valid @RequestBody request: UpdateDescriptionRequest
+    ): ResponseEntity<PlaceResponse> {
+        val updatedPlace = placeService.updateDescription(id, request.description)
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(
+                PlaceResponse.fromEntity(updatedPlace)
             )
     }
 

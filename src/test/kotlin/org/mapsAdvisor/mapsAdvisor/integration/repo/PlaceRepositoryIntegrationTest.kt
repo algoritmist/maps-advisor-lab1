@@ -1,7 +1,8 @@
-package org.mapsAdvisor.mapsAdvisor.integration
+package org.mapsAdvisor.mapsAdvisor.integration.repo
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mapsAdvisor.mapsAdvisor.integration.IntegrationEnvironment
 import org.mapsAdvisor.mapsAdvisor.model.entity.Place
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,4 +1,4 @@
-package org.mapsAdvisor.mapsAdvisor.integration
+package org.mapsAdvisor.mapsAdvisor.integration.repo
 
 import org.junit.jupiter.api.Test
 import org.mapsAdvisor.mapsAdvisor.model.entity.Grade
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.assertj.core.api.Assertions.assertThat
+import org.mapsAdvisor.mapsAdvisor.integration.IntegrationEnvironment
 import org.mapsAdvisor.mapsAdvisor.model.entity.RouteFeedback
 
 class FeedbackRepositoryIntegrationTest: IntegrationEnvironment() {

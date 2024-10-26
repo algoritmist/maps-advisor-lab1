@@ -114,6 +114,13 @@ class PlaceService(
         return placeRepository.findByCoordinatesNearAndNameContains(Point(longitude, latitude), name, pageable).content
     }
 
+    fun updateDescription(id: String, description: String): Place {
+        val place = getPlaceById(id) ?: throw NotFoundException("Place with id $id not found")
+        place.description = description
+
+        return placeRepository.save(place)
+    }
+
     @Transactional
     fun deleteById(id: String) {
         val placeToDelete = getPlaceById(id) ?: throw NotFoundException("Place with id $id not found")

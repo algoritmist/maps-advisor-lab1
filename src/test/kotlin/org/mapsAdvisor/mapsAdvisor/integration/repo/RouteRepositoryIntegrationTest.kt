@@ -1,9 +1,10 @@
-package org.mapsAdvisor.mapsAdvisor.integration
+package org.mapsAdvisor.mapsAdvisor.integration.repo
 
 import org.assertj.core.api.Assertions.assertThat
 import org.mapsAdvisor.mapsAdvisor.repository.RouteRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.junit.jupiter.api.Test
+import org.mapsAdvisor.mapsAdvisor.integration.IntegrationEnvironment
 import org.mapsAdvisor.mapsAdvisor.model.entity.Route
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable

@@ -1,4 +1,4 @@
-package org.mapsAdvisor.mapsAdvisor.integration
+package org.mapsAdvisor.mapsAdvisor.integration.repo
 
 import org.mapsAdvisor.mapsAdvisor.repository.PersonRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,6 +7,7 @@ import org.mapsAdvisor.mapsAdvisor.model.entity.Person
 import org.mapsAdvisor.mapsAdvisor.model.entity.Role
 import java.time.Instant
 import org.assertj.core.api.Assertions.assertThat
+import org.mapsAdvisor.mapsAdvisor.integration.IntegrationEnvironment
 
 class PersonRepositoryIntegrationTest : IntegrationEnvironment() {
     @Autowired

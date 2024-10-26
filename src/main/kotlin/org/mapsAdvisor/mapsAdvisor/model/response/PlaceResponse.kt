@@ -8,6 +8,7 @@ data class PlaceResponse(
     val coordinates: Coordinates,
     val tags: List<String>,
     val owners: List<String>,
+    val description: String?,
 
 ) {
     companion object {
@@ -17,7 +18,8 @@ data class PlaceResponse(
                 name = place.name,
                 coordinates = Coordinates(longitude = place.coordinates.x, latitude = place.coordinates.y),
                 owners = place.owners,
-                tags = place.tags
+                tags = place.tags,
+                description = place.description,
             )
     }
 }

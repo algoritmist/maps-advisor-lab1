@@ -20,8 +20,6 @@ services:
       test: echo "rs.status()" | mongosh --port 27017 --quiet
       interval: 5s
       timeout: 30s
-#      start_period: 0s
-#      retries: 30
 
   mongo-express:
     image: mongo-express
@@ -51,9 +49,7 @@ services:
     image: spring2
     extra_hosts:
       - "mongo:111.222.32.2"
-    #build:
-    #  context: .
-    #  dockerfile: Dockerfile
+
     ports:
       - "8080:8080"
     networks:
@@ -62,10 +58,7 @@ services:
       /my-project
     depends_on:
       - mongo
-    #environment:
-    #  DB_USERNAME: mongo
-    #  DB_PASSWORD: mongo
-    #  DB_URL: mongodb://mongo:27017/testbase?replicaSet=rs0
+
 
 volumes:
   mongo:

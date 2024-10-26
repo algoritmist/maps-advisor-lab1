@@ -1,8 +1,12 @@
+import kotlinx.kover.gradle.plugin.dsl.AggregationType
+import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
+
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
 	id("org.springframework.boot") version "3.3.4"
 	id("io.spring.dependency-management") version "1.1.6"
+	id("org.jetbrains.kotlinx.kover") version "0.8.0" // code coverage
 }
 
 group = "org.mapsAdvisor.mapsAdvisor"
@@ -41,6 +45,32 @@ dependencies {
 	// https://mvnrepository.com/artifact/de.flapdoodle.embed/de.flapdoodle.embed.mongo
 	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.35")
 
+}
+
+kover {
+	reports {
+		total {
+			html {
+				onCheck = true
+			}
+		}
+		filters {
+			includes {
+				classes(
+					"controller*"
+				)
+			}
+		}
+		verify {
+			rule("Branch Coverage") {
+				bound {
+					minValue = 80
+					coverageUnits = CoverageUnit.BRANCH
+					aggregationForGroup = AggregationType.COVERED_PERCENTAGE
+				}
+			}
+		}
+	}
 }
 
 kotlin {

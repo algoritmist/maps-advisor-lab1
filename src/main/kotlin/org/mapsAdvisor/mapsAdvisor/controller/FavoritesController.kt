@@ -30,8 +30,8 @@ class FavoritesController(
     }
 
     @GetMapping("/{id}")
-    fun getFavoriteById(@PathVariable id: String): ResponseEntity<FavoritesResponse> {
-        val favorite = favoritesService.getFavoriteById(id)
+    fun getFavorite(@PathVariable id: String): ResponseEntity<FavoritesResponse> {
+        val favorite = favoritesService.getFavorite(id)
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
@@ -41,12 +41,12 @@ class FavoritesController(
 
 
     @GetMapping("/person/{id}")
-    fun getFavoritesByPersonId(
+    fun getFavoritesByUser(
         @PathVariable id: String,
         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
         @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int,
     ): ResponseEntity<List<FavoritesResponse>> {
-        val favorites = favoritesService.getFavoritesByPersonId(id, page, size)
+        val favorites = favoritesService.getFavoritesByUser(id, page, size)
         return ResponseEntity.ok(
             favorites.map { FavoritesResponse.fromEntity(it) }
         )

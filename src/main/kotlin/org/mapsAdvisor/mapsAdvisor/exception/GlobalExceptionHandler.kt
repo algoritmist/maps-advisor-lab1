@@ -1,5 +1,6 @@
 package org.mapsAdvisor.mapsAdvisor.exception
 
+import com.fasterxml.jackson.databind.JsonMappingException
 import jakarta.validation.ConstraintViolationException
 import org.mapsAdvisor.mapsAdvisor.model.ErrorMessage
 import org.springframework.http.HttpStatus
@@ -90,6 +91,18 @@ class GlobalExceptionHandler {
 
         return ResponseEntity(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR)
     }
+
+    @ExceptionHandler(JsonMappingException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleJsonMappingException(ex: Exception): ResponseEntity<ErrorMessage> {
+        val errorMessage = ErrorMessage(
+            "Invalid syntax. Check your request body for mismatches",
+            ex.message
+        )
+
+        return ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST)
+    }
+
 
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

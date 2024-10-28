@@ -14,18 +14,19 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class PlaceIntegrationTest: IntegrationEnvironment() {
+class PlaceControllerTest: IntegrationEnvironment() {
     @Autowired
     private lateinit var mvc: MockMvc
     private val objectMapper: ObjectMapper = ObjectMapper()
 
     @Test
-    fun givenProduct_whenSave_thenGetProduct() {
+    fun givenPlace_whenSave_thenGetPlace() {
         val mvcResult = mvc.perform(
             post("/api/v1/place").contentType("application/json")
                 .content(objectMapper.writeValueAsString(CreatePlaceRequest("Banana", Coordinates(4.7, 8.0), listOf(), listOf(), "aboba"))
@@ -40,7 +41,7 @@ class PlaceIntegrationTest: IntegrationEnvironment() {
     }
 
     @Test
-    fun givenProduct_whenUpdateDescription_thenGetUpdatedProduct() {
+    fun givenPlace_whenUpdateDescription_thenGetUpdatedPlace() {
         val createPlaceRequest = CreatePlaceRequest("Banana", Coordinates(6.6, 8.0), listOf(), listOf(), "aboba")
 
         val mvcResult = mvc.perform(
@@ -66,5 +67,28 @@ class PlaceIntegrationTest: IntegrationEnvironment() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.description").value("New description"))
     }
+
+    @Test
+    fun givenPlace_whenDelete_thenPlaceNotFound() {
+        val createPlaceRequest = CreatePlaceRequest("Banana", Coordinates(4.7, 8.9), listOf(), listOf(), "aboba")
+
+        val mvcResult = mvc.perform(
+            post("/api/v1/place")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(createPlaceRequest))
+        )
+            .andExpect(status().isCreated)
+            .andReturn()
+
+        val id = objectMapper.readTree(mvcResult.response.contentAsString).get("id").asText()
+
+        mvc.perform(delete("/api/v1/place/$id"))
+            .andExpect(status().isNoContent)
+
+
+        mvc.perform(get("/api/v1/place/$id"))
+            .andExpect(status().isNotFound)
+    }
+
 
 }

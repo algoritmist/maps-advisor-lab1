@@ -76,7 +76,7 @@ class PlaceService(
         return placeRepository.findAll(pageable).content
     }
 
-    fun getPlaceById(id: String): Place? =
+    fun getPlace(id: String): Place? =
         placeRepository.findByIdOrNull(id)
 
     fun getPlacesNear(
@@ -115,15 +115,23 @@ class PlaceService(
     }
 
     fun updateDescription(id: String, description: String): Place {
-        val place = getPlaceById(id) ?: throw NotFoundException("Place with id $id not found")
+        val place = getPlace(id) ?: throw NotFoundException("Place with id $id not found")
         place.description = description
 
         return placeRepository.save(place)
     }
 
+    fun updateName(id: String, name: String): Place {
+        val place = getPlace(id) ?: throw NotFoundException("Place with id $id not found")
+        place.name = name
+
+        return placeRepository.save(place)
+    }
+
+
     @Transactional
-    fun deleteById(id: String) {
-        val placeToDelete = getPlaceById(id) ?: throw NotFoundException("Place with id $id not found")
+    fun deletePlace(id: String) {
+        val placeToDelete = getPlace(id) ?: throw NotFoundException("Place with id $id not found")
         placeRepository.delete(placeToDelete)
 
         if (placeFeedbackRepository.existsByPlaceId(id)) {

@@ -17,7 +17,7 @@ data class Place(
     @Field("name")
     var name: String,
 
-    @GeoSpatialIndexed(name = "coordinates", type = GeoSpatialIndexType.GEO_2DSPHERE)
+    @GeoSpatialIndexed(name = "coordinates_2dsphere", type = GeoSpatialIndexType.GEO_2DSPHERE)
     @Field("coordinates")
     var coordinates: GeoJsonPoint,
 

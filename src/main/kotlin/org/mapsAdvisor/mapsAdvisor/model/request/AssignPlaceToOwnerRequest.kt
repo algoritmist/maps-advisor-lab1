@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 import jakarta.validation.constraints.NotBlank
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class AssignPlaceToPersonRequest(
+data class AssignPlaceToOwnerRequest(
     @field:NotBlank(message = "place id must not be blank")
     val placeId: String,
 

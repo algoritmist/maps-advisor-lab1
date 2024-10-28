@@ -12,12 +12,11 @@ services:
       - '27017:27017'
     volumes:
       - mongo:/data/db
-      - ./scripts/setup_mongo.sh:/data/scripts/setup_mongo.sh
     networks:
       mongo-cluster:
         ipv4_address: 111.222.32.2
     healthcheck:
-      test: echo "rs.status()" | mongosh --port 27017 --quiet
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo:27017'}]}) }" | mongosh --port 27017 --quiet
       interval: 5s
       timeout: 30s
 
@@ -46,19 +45,21 @@ services:
       - mongo-cluster
 
   spring-app:
-    image: spring2
+    build: .
     extra_hosts:
       - "mongo:111.222.32.2"
-
     ports:
       - "8080:8080"
     networks:
       - mongo-cluster
     working_dir:
-      /my-project
+      /spring-app
     depends_on:
       - mongo
-
+    environment:
+      DB_USERNAME: mongo
+      DB_PASSWORD: mongo
+      DB_URL: mongodb://mongo:27017/testbase?replicaSet=rs0&directConnection=true
 
 volumes:
   mongo:

@@ -1,5 +1,8 @@
 server:
     port: 8080
+    error:
+        include-message: always
+
 spring:
     data:
         mongodb:
@@ -10,15 +13,6 @@ spring:
 
     jackson:
       property-naming-strategy: SNAKE_CASE
-
-
-app:
-    datasource:
-        url: mongodb://mongo:27017
-        db: testbase
-        username: mongo
-        password: mongo
-        authSource: admin
 
 api:
     prefix: /api/v1

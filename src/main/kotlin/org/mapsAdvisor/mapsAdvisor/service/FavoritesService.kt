@@ -18,9 +18,9 @@ class FavoritesService(
 ) {
 
     fun addToFavorites(favorite: CreateFavoritesRequest): FavoriteEntity {
-        placeService.getPlaceById(favorite.placeId)
+        placeService.getPlace(favorite.placeId)
             ?: throw NotFoundException("Place with id ${favorite.placeId} not found")
-        personService.getUserById(favorite.personId)
+        personService.getUser(favorite.personId)
             ?: throw NotFoundException("Person with id ${favorite.personId} not found")
 
         if (favoritesRepository.existsByPersonIdAndPlaceId(favorite.personId, favorite.placeId)) {
@@ -42,13 +42,13 @@ class FavoritesService(
         )
     }
 
-    fun getFavoriteById(id: String): FavoriteEntity {
+    fun getFavorite(id: String): FavoriteEntity {
         return favoritesRepository.findById(id)
             .orElseThrow { NotFoundException("Favorite with id $id not found") }
     }
 
-    fun getFavoritesByPersonId(personId: String, page: Int, size: Int): List<FavoriteEntity> {
-        personService.getUserById(personId)
+    fun getFavoritesByUser(personId: String, page: Int, size: Int): List<FavoriteEntity> {
+        personService.getUser(personId)
             ?: throw NotFoundException("Person with id $personId not found")
 
         val pageable: Pageable = PageRequest.of(page, size)

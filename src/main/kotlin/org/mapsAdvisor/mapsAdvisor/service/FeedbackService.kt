@@ -20,9 +20,9 @@ class FeedbackService(
     private val personService: UserService,
 ) {
     fun createRouteFeedback(feedback: CreateRouteFeedbackRequest): RouteFeedback {
-        routeService.getRouteById(feedback.routeId)
+        routeService.getRoute(feedback.routeId)
             ?: throw NotFoundException("Route with id ${feedback.routeId} not found")
-        personService.getUserById(feedback.personId)
+        personService.getUser(feedback.personId)
             ?: throw NotFoundException("Person with id ${feedback.personId} not found")
         return routeFeedbackRepository.save(
             RouteFeedback(
@@ -36,7 +36,7 @@ class FeedbackService(
     }
 
     fun getRouteFeedbacks(routeId: String, page: Int, size: Int): List<RouteFeedback> {
-        routeService.getRouteById(routeId) ?: throw NotFoundException("Route with id $routeId not found")
+        routeService.getRoute(routeId) ?: throw NotFoundException("Route with id $routeId not found")
         val pageable: Pageable = PageRequest.of(page, size)
         return routeFeedbackRepository.findByRouteId(routeId, pageable).content
     }
@@ -49,9 +49,9 @@ class FeedbackService(
     }
 
     fun createPlaceFeedback(feedback: CreatePlaceFeedbackRequest): PlaceFeedback {
-        placeService.getPlaceById(feedback.placeId)
+        placeService.getPlace(feedback.placeId)
             ?: throw NotFoundException("Place with id ${feedback.placeId} not found")
-        personService.getUserById(feedback.personId)
+        personService.getUser(feedback.personId)
             ?: throw NotFoundException("Person with id ${feedback.personId} not found")
         return placeFeedbackRepository.save(
             PlaceFeedback(
@@ -65,7 +65,7 @@ class FeedbackService(
     }
 
     fun getPlaceFeedbacks(placeId: String, page: Int, size: Int): List<PlaceFeedback> {
-        placeService.getPlaceById(placeId)
+        placeService.getPlace(placeId)
             ?: throw NotFoundException("Route with id $placeId not found")
         val pageable: Pageable = PageRequest.of(page, size)
         return placeFeedbackRepository.findByPlaceId(placeId, pageable).content

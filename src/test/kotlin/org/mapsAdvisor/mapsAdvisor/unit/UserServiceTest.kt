@@ -80,7 +80,7 @@ class UserServiceTest {
         whenever(placeRepository.findById(place.id!!)).thenReturn(Optional.of(place))
         whenever(placeRepository.findAllById(listOf(place.id!!))).thenReturn(listOf(place))
 
-    val response = personService.assignPlaceToUser(person.id!!, place.id!!)
+    val response = personService.assignPlaceToOwner(person.id!!, place.id!!)
         assertContains(person.placesOwned, place.id!!)
         assertEquals(person.role, Role.OWNER)
         assertContains(place.owners, person.id!!)
@@ -93,7 +93,7 @@ class UserServiceTest {
         val placeId = UUID.randomUUID().toString()
         whenever(personRepository.findById(personId)).thenReturn(Optional.empty())
         whenever(placeRepository.findById(placeId)).thenReturn(Optional.of(mock<Place>()))
-        assertThrows<NotFoundException> {personService.assignPlaceToUser(personId, placeId)}
+        assertThrows<NotFoundException> {personService.assignPlaceToOwner(personId, placeId)}
     }
 
     @Test
@@ -102,20 +102,20 @@ class UserServiceTest {
         val placeId = UUID.randomUUID().toString()
         whenever(personRepository.findById(personId)).thenReturn(Optional.of(mock<Person>()))
         whenever(placeRepository.findById(placeId)).thenReturn(Optional.empty())
-        assertThrows<NotFoundException> {personService.assignPlaceToUser(personId, placeId)}
+        assertThrows<NotFoundException> {personService.assignPlaceToOwner(personId, placeId)}
     }
 
     @Test
     fun `delete person by id should delete person`(){
         val personId = UUID.randomUUID().toString()
         whenever(personRepository.findById(personId)).thenReturn(Optional.of(mock<Person>()))
-        assertDoesNotThrow { personService.deletePersonById(personId) }
+        assertDoesNotThrow { personService.deleteUser(personId) }
     }
 
     @Test
     fun `delete person by id should throw NotFoundException`(){
         val personId = UUID.randomUUID().toString()
         whenever(personRepository.findById(personId)).thenReturn(Optional.empty())
-        assertThrows<NotFoundException> { personService.deletePersonById(personId) }
+        assertThrows<NotFoundException> { personService.deleteUser(personId) }
     }
 }

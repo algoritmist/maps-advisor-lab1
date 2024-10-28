@@ -41,8 +41,8 @@ class FeedbackServiceTest {
         val id = UUID.randomUUID().toString()
         val routeId = UUID.randomUUID().toString()
         val personId = UUID.randomUUID().toString()
-        whenever(routeService.getRouteById(routeId)).thenReturn(Route(id, "aboba", "aboba"))
-        whenever(personService.getUserById(personId)).thenReturn(
+        whenever(routeService.getRoute(routeId)).thenReturn(Route(id, "aboba", "aboba"))
+        whenever(personService.getUser(personId)).thenReturn(
             Person(
                 id,
                 "a",
@@ -71,8 +71,8 @@ class FeedbackServiceTest {
     fun `test createRouteFeedback throws NotFoundException when route not found`() {
         val routeId = UUID.randomUUID().toString()
         val personId = UUID.randomUUID().toString()
-        whenever(routeService.getRouteById(routeId)).thenReturn(null)
-        whenever(personService.getUserById(personId)).thenReturn(
+        whenever(routeService.getRoute(routeId)).thenReturn(null)
+        whenever(personService.getUser(personId)).thenReturn(
             Person(
                 personId,
                 "a",
@@ -99,8 +99,8 @@ class FeedbackServiceTest {
     fun `test createRouteFeedback throws NotFoundException when person not found`() {
         val personId = UUID.randomUUID().toString()
         val routeId = UUID.randomUUID().toString()
-        whenever(routeService.getRouteById(routeId)).thenReturn(Route("123", "aboba", "aboba"))
-        whenever(personService.getUserById(personId)).thenReturn(null)
+        whenever(routeService.getRoute(routeId)).thenReturn(Route("123", "aboba", "aboba"))
+        whenever(personService.getUser(personId)).thenReturn(null)
 
         assertThrows<NotFoundException> {
             feedbackService.createRouteFeedback(
@@ -120,7 +120,7 @@ class FeedbackServiceTest {
         val routeId = UUID.randomUUID().toString()
         val page = PageRequest.of(0, pageSize)
         val lst = mock<List<RouteFeedback>>()
-        whenever(routeService.getRouteById(routeId)).thenReturn(Route("123", "aboba", "aboba"))
+        whenever(routeService.getRoute(routeId)).thenReturn(Route("123", "aboba", "aboba"))
         whenever(lst.size).thenReturn(pageSize)
         whenever(routeFeedbackRepository.findByRouteId(routeId, page)).thenReturn(mock<Page<RouteFeedback>>())
         whenever(routeFeedbackRepository.findByRouteId(routeId, page).content).thenReturn(lst)
@@ -131,7 +131,7 @@ class FeedbackServiceTest {
     @Test
     fun `test getRouteFeedbacks throws NotFoundException when route not found`() {
         val routeId = UUID.randomUUID().toString()
-        whenever(routeService.getRouteById(routeId)).thenReturn(null)
+        whenever(routeService.getRoute(routeId)).thenReturn(null)
         assertThrows<NotFoundException> { feedbackService.getRouteFeedbacks(routeId, 50, 40) }
     }
 
@@ -154,8 +154,8 @@ class FeedbackServiceTest {
         val id = UUID.randomUUID().toString()
         val placeId = UUID.randomUUID().toString()
         val personId = UUID.randomUUID().toString()
-        whenever(placeService.getPlaceById(placeId)).thenReturn(Place(id, "aboba", GeoJsonPoint(2.0, 4.0)))
-        whenever(personService.getUserById(personId)).thenReturn(
+        whenever(placeService.getPlace(placeId)).thenReturn(Place(id, "aboba", GeoJsonPoint(2.0, 4.0)))
+        whenever(personService.getUser(personId)).thenReturn(
             Person(
                 id,
                 "a",
@@ -184,8 +184,8 @@ class FeedbackServiceTest {
     fun `test createPlaceFeedback throws NotFoundException when place not found`() {
         val placeId = UUID.randomUUID().toString()
         val personId = UUID.randomUUID().toString()
-        whenever(placeService.getPlaceById(placeId)).thenReturn(null)
-        whenever(personService.getUserById(personId)).thenReturn(
+        whenever(placeService.getPlace(placeId)).thenReturn(null)
+        whenever(personService.getUser(personId)).thenReturn(
             Person(
                 personId,
                 "a",
@@ -211,8 +211,8 @@ class FeedbackServiceTest {
     fun `test createPlaceFeedback throws NotFoundException when person not found`() {
         val placeId = UUID.randomUUID().toString()
         val personId = UUID.randomUUID().toString()
-        whenever(placeService.getPlaceById(placeId)).thenReturn(Place(placeId, "aboba", GeoJsonPoint(2.0, 4.0)))
-        whenever(personService.getUserById(personId)).thenReturn(null)
+        whenever(placeService.getPlace(placeId)).thenReturn(Place(placeId, "aboba", GeoJsonPoint(2.0, 4.0)))
+        whenever(personService.getUser(personId)).thenReturn(null)
         assertThrows<NotFoundException> {
             feedbackService.createPlaceFeedback(
                 CreatePlaceFeedbackRequest(
@@ -232,7 +232,7 @@ class FeedbackServiceTest {
         val pageRequest = PageRequest.of(0, pageSize)
         val lst = mock<List<PlaceFeedback>>()
 
-        whenever(placeService.getPlaceById(placeId)).thenReturn(Place(placeId, "aboba", GeoJsonPoint(2.0, 4.0)))
+        whenever(placeService.getPlace(placeId)).thenReturn(Place(placeId, "aboba", GeoJsonPoint(2.0, 4.0)))
         whenever(lst.size).thenReturn(pageSize)
         whenever(placeFeedbackRepository.findByPlaceId(placeId, pageRequest)).thenReturn(mock<Page<PlaceFeedback>>())
         whenever(placeFeedbackRepository.findByPlaceId(placeId, pageRequest).content).thenReturn(lst)
@@ -244,7 +244,7 @@ class FeedbackServiceTest {
     @Test
     fun `test getPlaceFeedbacks throws NotFoundException when place not found`() {
         val placeId = UUID.randomUUID().toString()
-        whenever(placeService.getPlaceById(placeId)).thenReturn(null)
+        whenever(placeService.getPlace(placeId)).thenReturn(null)
         assertThrows<NotFoundException> { feedbackService.getPlaceFeedbacks(placeId, 50, 40) }
     }
 

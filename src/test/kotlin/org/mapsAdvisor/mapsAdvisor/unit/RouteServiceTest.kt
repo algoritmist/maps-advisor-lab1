@@ -12,6 +12,7 @@ import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
 import org.mapsAdvisor.mapsAdvisor.repository.RouteFeedbackRepository
 import org.mapsAdvisor.mapsAdvisor.repository.RouteRepository
 import org.mapsAdvisor.mapsAdvisor.model.request.CreateRouteRequest
+import org.mapsAdvisor.mapsAdvisor.service.PlaceService
 import org.mapsAdvisor.mapsAdvisor.service.RouteService
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
@@ -26,7 +27,8 @@ class RouteServiceTest {
     private val routeRepository = mock<RouteRepository>()
     private val placeRepository = mock<PlaceRepository>()
     private val routeFeedbackRepository = mock<RouteFeedbackRepository>()
-    private val routeService = RouteService(routeRepository, routeFeedbackRepository)
+    private val placeService = mock<PlaceService>()
+    private val routeService = RouteService(routeRepository, routeFeedbackRepository, placeService)
 
     @Test
     fun `test createRoute successfully creates a route`(){
@@ -80,7 +82,7 @@ class RouteServiceTest {
         whenever(list.size).thenReturn(pageSize)
         whenever(routeRepository.findAll(pageable)).thenReturn(mock<Page<Route>>())
         whenever(routeRepository.findAll(pageable).content).thenReturn(list)
-        val listGot = routeService.findAll(0, pageSize)
+        val listGot = routeService.getAllRoutes(0, pageSize)
         assertEquals(list.size, listGot.size)
     }
 
@@ -89,14 +91,14 @@ class RouteServiceTest {
         val routeId = UUID.randomUUID().toString()
         val route = mock<Route>()
         whenever(routeRepository.findById(routeId)).thenReturn(Optional.of(route))
-        assertEquals(routeService.getRouteById(routeId), route)
+        assertEquals(routeService.getRoute(routeId), route)
     }
 
     @Test
     fun `test findById throws NotFoundException if route not found`(){
         val routeId = UUID.randomUUID().toString()
         whenever(routeRepository.findById(routeId)).thenReturn(Optional.empty())
-        assertThrows<NotFoundException> {routeService.getRouteById(routeId) }
+        assertThrows<NotFoundException> {routeService.getRoute(routeId) }
     }
 
     @Test
@@ -110,7 +112,7 @@ class RouteServiceTest {
     fun `test deleteById throws NotFoundException if route does not exist`(){
         val routeId = UUID.randomUUID().toString()
         whenever(routeRepository.findById(routeId)).thenReturn(Optional.empty())
-        assertThrows<NotFoundException> {routeService.deleteById(routeId) }
+        assertThrows<NotFoundException> {routeService.deleteRoute(routeId) }
     }
 
     @ParameterizedTest
@@ -157,6 +159,6 @@ class RouteServiceTest {
         val pageable = PageRequest.of(0, pageSize)
         whenever(routeRepository.findAllByPlacesContains(place2.id!!, pageable)).thenReturn(mock<Page<Route>>())
         whenever(routeRepository.findAllByPlacesContains(place2.id!!, pageable).content).thenReturn(listOf(route1, route2))
-        assertEquals(listOf(route1, route2), routeService.findRoutesByPlaceId(place2.id!!, 0, pageSize))
+        assertEquals(listOf(route1, route2), routeService.findRoutesByPlaceContains(place2.id!!, 0, pageSize))
     }
 }

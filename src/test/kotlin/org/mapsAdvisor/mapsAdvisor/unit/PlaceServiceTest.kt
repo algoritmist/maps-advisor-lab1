@@ -77,14 +77,14 @@ class PlaceServiceTest {
     fun `find by id should return place`(){
         val placeId = UUID.randomUUID().toString()
         whenever(placeRepository.findById(placeId)).thenReturn(Optional.of(mock<Place>()))
-        assertDoesNotThrow { placeService.getPlaceById(placeId) }
+        assertDoesNotThrow { placeService.getPlace(placeId) }
     }
 
     @Test
     fun `find by id should return NotFoundException`(){
         val placeId = UUID.randomUUID().toString()
         whenever(placeRepository.findById(placeId)).thenReturn(Optional.empty())
-        assertThrows<NotFoundException> { placeService.getPlaceById(placeId)  }
+        assertThrows<NotFoundException> { placeService.getPlace(placeId)  }
     }
 
     @ParameterizedTest
@@ -140,14 +140,14 @@ class PlaceServiceTest {
         val place = mock<Place>()
         val placeId = UUID.randomUUID().toString()
         whenever(placeRepository.findById(placeId)).thenReturn(Optional.of(place))
-        assertDoesNotThrow { placeService.deleteById(placeId) }
+        assertDoesNotThrow { placeService.deletePlace(placeId) }
     }
 
     @Test
     fun `delete by id should throw NotFoundException`(){
         val placeId = UUID.randomUUID().toString()
         whenever(placeRepository.findById(placeId)).thenReturn(Optional.empty())
-        assertThrows<NotFoundException> { placeService.deleteById(placeId) }
+        assertThrows<NotFoundException> { placeService.deletePlace(placeId) }
     }
 
     @Test

@@ -3,10 +3,8 @@ package org.mapsAdvisor.mapsAdvisor.controller
 import jakarta.validation.Valid
 import org.mapsAdvisor.mapsAdvisor.controller.UserController.Companion.ROOT_URI
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
-import org.mapsAdvisor.mapsAdvisor.model.request.AssignPlaceToPersonRequest
 import org.mapsAdvisor.mapsAdvisor.model.request.CreateUserRequest
-import org.mapsAdvisor.mapsAdvisor.model.response.PersonResponse
-import org.mapsAdvisor.mapsAdvisor.model.response.PersonWithPlacesResponse
+import org.mapsAdvisor.mapsAdvisor.model.response.UserResponse
 import org.mapsAdvisor.mapsAdvisor.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -19,37 +17,29 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     private val userService: UserService
 ) {
-    @GetMapping("/{id}")
-    fun getUser(@PathVariable id: String): ResponseEntity<PersonResponse> {
-        val person = userService.getUserById(id) ?: throw NotFoundException("User with id $id not found")
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(
-                PersonResponse.fromEntity(person)
-            )
-    }
-
-    @PostMapping("/signup")
-    fun createUser(@Valid @RequestBody newUser: CreateUserRequest): ResponseEntity<PersonResponse> {
+    @PostMapping
+    fun createUser(@Valid @RequestBody newUser: CreateUserRequest): ResponseEntity<UserResponse> {
         val person = userService.createUser(newUser)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(
-                PersonResponse.fromEntity(person)
+                UserResponse.fromEntity(person)
             )
     }
 
-    @PatchMapping("/assign")
-    fun assignPlaceToUser(
-        @Valid @RequestBody assignRequest: AssignPlaceToPersonRequest
-    ): ResponseEntity<PersonWithPlacesResponse> {
-        val updatedPerson = userService.assignPlaceToUser(assignRequest.personId, assignRequest.placeId)
-        return ResponseEntity.ok(updatedPerson)
+    @GetMapping("/{id}")
+    fun getUser(@PathVariable id: String): ResponseEntity<UserResponse> {
+        val person = userService.getUser(id) ?: throw NotFoundException("User with id $id not found")
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(
+                UserResponse.fromEntity(person)
+            )
     }
 
     @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable id: String): ResponseEntity<Unit> {
-        userService.deletePersonById(id)
+        userService.deleteUser(id)
         return ResponseEntity.noContent().build()
     }
 

@@ -7,7 +7,7 @@ import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.repository.PersonRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
 import org.mapsAdvisor.mapsAdvisor.model.request.CreateUserRequest
-import org.mapsAdvisor.mapsAdvisor.model.response.PersonWithPlacesResponse
+import org.mapsAdvisor.mapsAdvisor.model.response.UserResponse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,7 +18,7 @@ class UserService(
     private val personRepository: PersonRepository,
     private val placeRepository: PlaceRepository
 ) {
-    fun getUserById(id: String): Person? {
+    fun getUser(id: String): Person? {
         return personRepository.findByIdOrNull(id)
     }
 
@@ -39,7 +39,7 @@ class UserService(
     }
 
     @Transactional
-    fun assignPlaceToUser(personId: String, placeId: String): PersonWithPlacesResponse {
+    fun assignPlaceToOwner(personId: String, placeId: String): UserResponse {
         val person = personRepository.findById(personId)
             .orElseThrow { NotFoundException("Person with id $personId not found") }
 
@@ -57,20 +57,20 @@ class UserService(
         }
 
         person.placesOwned += placeId
-        place.owners = listOf(personId)
+        place.owners += personId
 
         personRepository.save(person)
         placeRepository.save(place)
 
-        return PersonWithPlacesResponse.fromEntity(person, place)
+        return UserResponse.fromEntity(person)
     }
 
     @Transactional
-    fun deletePersonById(personId: String) {
-        val personToDelete = personRepository.findById(personId)
-            .orElseThrow { NotFoundException("Person with id $personId not found") }
+    fun deleteUser(personId: String) {
+        val userToDelete = personRepository.findById(personId)
+            .orElseThrow { NotFoundException("User with id $personId not found") }
 
-        personRepository.delete(personToDelete)
+        personRepository.delete(userToDelete)
         placeRepository.deleteAllByOwnersContains(personId)
     }
 }

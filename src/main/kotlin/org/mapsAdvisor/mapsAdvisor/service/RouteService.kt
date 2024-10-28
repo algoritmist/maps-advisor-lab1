@@ -5,7 +5,6 @@ import org.mapsAdvisor.mapsAdvisor.model.entity.Route
 import org.mapsAdvisor.mapsAdvisor.repository.RouteFeedbackRepository
 import org.mapsAdvisor.mapsAdvisor.repository.RouteRepository
 import org.mapsAdvisor.mapsAdvisor.model.request.CreateRouteRequest
-import org.springframework.dao.DataAccessException
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -14,9 +13,14 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class RouteService(
     private val routeRepository: RouteRepository,
-    private val routeFeedbackRepository: RouteFeedbackRepository
+    private val routeFeedbackRepository: RouteFeedbackRepository,
+    private val placeService: PlaceService,
 ) {
     fun createRoute(request: CreateRouteRequest): Route {
+        request.places.forEach { id ->
+            placeService.getPlace(id)
+                ?: throw NotFoundException("Place with id $id not found")
+        }
         return routeRepository.save(
             Route(
                 name = request.name,
@@ -26,17 +30,17 @@ class RouteService(
         )
     }
 
-    fun findAll(page: Int, size: Int): List<Route> {
+    fun getAllRoutes(page: Int, size: Int): List<Route> {
         val pageable = PageRequest.of(page, size)
         return routeRepository.findAll(pageable).content
     }
 
-    fun getRouteById(id: String): Route? =
+    fun getRoute(id: String): Route? =
         routeRepository.findByIdOrNull(id)
 
     @Transactional
-    fun deleteById(id: String) {
-        val routeToDelete = getRouteById(id) ?: throw NotFoundException("Route with id $id not found")
+    fun deleteRoute(id: String) {
+        val routeToDelete = getRoute(id) ?: throw NotFoundException("Route with id $id not found")
         routeRepository.delete(routeToDelete)
 
         if (routeFeedbackRepository.existsByRouteId(id)) {
@@ -44,7 +48,7 @@ class RouteService(
         }
     }
 
-    fun findRoutesByPlaceId(placeId: String, page: Int, size: Int): List<Route> {
+    fun findRoutesByPlaceContains(placeId: String, page: Int, size: Int): List<Route> {
         val pageable = PageRequest.of(page, size)
         return routeRepository.findAllByPlacesContains(placeId, pageable).content
     }

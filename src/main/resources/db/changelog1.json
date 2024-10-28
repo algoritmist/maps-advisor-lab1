@@ -53,7 +53,7 @@
                           "items": { "bsonType": "string" },
                           "description": "References to the owners of the place"
                         },
-                        "info": {
+                        "description": {
                           "bsonType": ["string", "null"],
                           "description": "Optional information about the place"
                         }

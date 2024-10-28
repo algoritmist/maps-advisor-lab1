@@ -9,6 +9,7 @@ import org.mapsAdvisor.mapsAdvisor.controller.PlaceController.Companion.ROOT_URI
 import org.mapsAdvisor.mapsAdvisor.exception.NotFoundException
 import org.mapsAdvisor.mapsAdvisor.model.request.CreatePlaceRequest
 import org.mapsAdvisor.mapsAdvisor.model.request.UpdateDescriptionRequest
+import org.mapsAdvisor.mapsAdvisor.model.request.UpdateNameRequest
 import org.mapsAdvisor.mapsAdvisor.model.response.PlaceResponse
 import org.mapsAdvisor.mapsAdvisor.service.MAX_PAGE_SIZE
 import org.mapsAdvisor.mapsAdvisor.service.PlaceService
@@ -51,9 +52,9 @@ class PlaceController(
     }
 
     @GetMapping("/{id}")
-    fun getPlaceById(@PathVariable id: String): ResponseEntity<PlaceResponse> {
+    fun getPlace(@PathVariable id: String): ResponseEntity<PlaceResponse> {
         val place =
-            placeService.getPlaceById(id) ?: throw NotFoundException("Place with id $id not found")
+            placeService.getPlace(id) ?: throw NotFoundException("Place with id $id not found")
         return ResponseEntity
             .ok(
                 PlaceResponse.fromEntity(place)
@@ -126,9 +127,23 @@ class PlaceController(
             )
     }
 
+    @PatchMapping("/{id}/name")
+    fun updateName(
+        @PathVariable id: String,
+        @Valid @RequestBody request: UpdateNameRequest
+    ): ResponseEntity<PlaceResponse> {
+        val updatedPlace = placeService.updateName(id, request.name)
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(
+                PlaceResponse.fromEntity(updatedPlace)
+            )
+    }
+
     @DeleteMapping("/{id}")
     fun deletePlace(@PathVariable id: String): ResponseEntity<Unit> {
-        placeService.deleteById(id)
+        placeService.deletePlace(id)
         return ResponseEntity.noContent().build()
     }
 

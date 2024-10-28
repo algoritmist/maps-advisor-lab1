@@ -36,8 +36,8 @@ class FavoritesServiceTest {
         val personId = UUID.randomUUID().toString()
         val placeId = UUID.randomUUID().toString()
         val favoriteId = UUID.randomUUID().toString()
-        whenever(placeService.getPlaceById(placeId)).thenReturn(Place(placeId, "aboba", GeoJsonPoint(2.0, 4.0)))
-        whenever(personService.getUserById(personId)).thenReturn(
+        whenever(placeService.getPlace(placeId)).thenReturn(Place(placeId, "aboba", GeoJsonPoint(2.0, 4.0)))
+        whenever(personService.getUser(personId)).thenReturn(
             Person(
                 personId,
                 "a",
@@ -68,8 +68,8 @@ class FavoritesServiceTest {
     fun `test saveFavorite throws NotFoundException when place not found`() {
         val placeId = UUID.randomUUID().toString()
         val personId = UUID.randomUUID().toString()
-        whenever(placeService.getPlaceById(placeId)).thenReturn(null)
-        whenever(personService.getUserById(personId)).thenReturn(
+        whenever(placeService.getPlace(placeId)).thenReturn(null)
+        whenever(personService.getUser(personId)).thenReturn(
             Person(
                 personId,
                 "a",
@@ -95,8 +95,8 @@ class FavoritesServiceTest {
     fun `test saveFavorite throws NotFoundException when person not found`() {
         val personId = UUID.randomUUID().toString()
         val placeId = UUID.randomUUID().toString()
-        whenever(placeService.getPlaceById(placeId)).thenReturn(Place(placeId, "aboba", GeoJsonPoint(2.0, 4.0)))
-        whenever(personService.getUserById(personId)).thenReturn(null)
+        whenever(placeService.getPlace(placeId)).thenReturn(Place(placeId, "aboba", GeoJsonPoint(2.0, 4.0)))
+        whenever(personService.getUser(personId)).thenReturn(null)
         assertThrows<NotFoundException> {
             favoritesService.addToFavorites(
                 CreateFavoritesRequest(
@@ -112,8 +112,8 @@ class FavoritesServiceTest {
     fun `test saveFavorite throws IllegalArgumentException when favorite not found`() {
         val personId = UUID.randomUUID().toString()
         val placeId = UUID.randomUUID().toString()
-        whenever(placeService.getPlaceById(placeId)).thenReturn(Place(placeId, "aboba", GeoJsonPoint(2.0, 4.0)))
-        whenever(personService.getUserById(personId)).thenReturn(
+        whenever(placeService.getPlace(placeId)).thenReturn(Place(placeId, "aboba", GeoJsonPoint(2.0, 4.0)))
+        whenever(personService.getUser(personId)).thenReturn(
             Person(
                 personId,
                 "a",
@@ -139,21 +139,21 @@ class FavoritesServiceTest {
     fun `test getFavoriteById returns favorite`() {
         val favoriteId = UUID.randomUUID().toString()
         whenever(favoritesRepository.findById(favoriteId)).thenReturn(Optional.of(mock<FavoriteEntity>()))
-        assertDoesNotThrow { favoritesService.getFavoriteById(favoriteId) }
+        assertDoesNotThrow { favoritesService.getFavorite(favoriteId) }
     }
 
     @Test
     fun `test getFavoriteById throws NotFoundException`() {
         val favoriteId = UUID.randomUUID().toString()
         whenever(favoritesRepository.findById(favoriteId)).thenReturn(Optional.empty())
-        assertThrows<NotFoundException> { favoritesService.getFavoriteById(favoriteId) }
+        assertThrows<NotFoundException> { favoritesService.getFavorite(favoriteId) }
     }
 
     @ParameterizedTest
     @ValueSource(ints = [10, 20, 50])
     fun `test getFavoritesByPersonId returns list of favorites`(pageSize: Int) {
         val personId = UUID.randomUUID().toString()
-        whenever(personService.getUserById(personId)).thenReturn(
+        whenever(personService.getUser(personId)).thenReturn(
             Person(
                 personId,
                 "a",
@@ -169,16 +169,16 @@ class FavoritesServiceTest {
         whenever(list.size).thenReturn(pageSize)
         whenever(favoritesRepository.findByPersonId(personId, pageable)).thenReturn(mock<Page<FavoriteEntity>>())
         whenever(favoritesRepository.findByPersonId(personId, pageable).content).thenReturn(list)
-        val result = favoritesService.getFavoritesByPersonId(personId, 0, pageSize)
+        val result = favoritesService.getFavoritesByUser(personId, 0, pageSize)
         assertEquals(pageSize, result.size)
     }
 
     @Test
     fun `test getFavoritesByPersonId throws NotFoundException when person not found`() {
         val personId = UUID.randomUUID().toString()
-        whenever(personService.getUserById(personId)).thenReturn(null)
+        whenever(personService.getUser(personId)).thenReturn(null)
         assertThrows<NotFoundException> {
-            favoritesService.getFavoritesByPersonId(
+            favoritesService.getFavoritesByUser(
                 personId,
                 page = 0,
                 size = 50

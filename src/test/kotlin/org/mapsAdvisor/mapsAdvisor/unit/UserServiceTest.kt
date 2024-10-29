@@ -3,6 +3,7 @@ package org.mapsAdvisor.mapsAdvisor.unit
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import org.mapsAdvisor.mapsAdvisor.exception.DuplicateException
 import org.mapsAdvisor.mapsAdvisor.model.entity.Person
 import org.mapsAdvisor.mapsAdvisor.model.entity.Place
 import org.mapsAdvisor.mapsAdvisor.model.entity.Role
@@ -50,10 +51,10 @@ class UserServiceTest {
     }
 
     @Test
-    fun `create person should throw IllegalArgumentException`(){
+    fun `create person should throw DuplicateException`(){
         whenever(personRepository.existsByUsername("baeldung")).thenReturn(true)
         val person = CreateUserRequest("a", "baeldung", "123456789")
-        assertThrows<IllegalArgumentException> { personService.createUser(person) }
+        assertThrows<DuplicateException> { personService.createUser(person) }
     }
 
     @Test

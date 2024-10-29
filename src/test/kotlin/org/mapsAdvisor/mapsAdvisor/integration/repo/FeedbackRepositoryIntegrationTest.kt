@@ -12,9 +12,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.mapsAdvisor.mapsAdvisor.integration.IntegrationEnvironment
 import org.mapsAdvisor.mapsAdvisor.model.entity.RouteFeedback
 
-class FeedbackRepositoryIntegrationTest: IntegrationEnvironment() {
+class FeedbackRepositoryIntegrationTest : IntegrationEnvironment() {
     @Autowired
     private lateinit var routeFeedbackRepository: RouteFeedbackRepository
+
     @Autowired
     private lateinit var placeFeedbackRepository: PlaceFeedbackRepository
 
@@ -39,7 +40,9 @@ class FeedbackRepositoryIntegrationTest: IntegrationEnvironment() {
 
         placeFeedbackRepository.deleteAllByPlaceId("place2")
 
-        val feedbackPageAfterDeletion = placeFeedbackRepository.findByPlaceId("place2", PageRequest.of(0, 50))
+        val feedbackPageAfterDeletion = placeFeedbackRepository.findByPlaceId(
+            "place2", PageRequest.of(0, 50)
+        )
         assertThat(feedbackPageAfterDeletion.content).isEmpty()
     }
 
@@ -64,7 +67,9 @@ class FeedbackRepositoryIntegrationTest: IntegrationEnvironment() {
 
         routeFeedbackRepository.deleteAllByRouteId("123")
 
-        val feedbackPageAfterDeletion = routeFeedbackRepository.findByRouteId("123", PageRequest.of(0, 50))
+        val feedbackPageAfterDeletion = routeFeedbackRepository.findByRouteId(
+            "123", PageRequest.of(0, 50)
+        )
         assertThat(feedbackPageAfterDeletion.content).isEmpty()
     }
 }

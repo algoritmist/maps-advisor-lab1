@@ -16,9 +16,19 @@ interface PlaceRepository : MongoRepository<Place, String> {
 
     fun findByCoordinatesNear(coordinates: Point, distance: Distance, pageable: Pageable): Page<Place>
 
-    fun findByCoordinatesNearAndTagsContains(coordinates: Point,  tag: String, distance: Distance, pageable: Pageable): Page<Place>
+    fun findByCoordinatesNearAndTagsContains(
+        coordinates: Point,
+        tag: String,
+        distance: Distance,
+        pageable: Pageable
+    ): Page<Place>
 
-    fun findByCoordinatesNearAndNameContains(coordinates: Point, name: String, distance: Distance, pageable: Pageable): Page<Place>
+    fun findByCoordinatesNearAndNameContains(
+        coordinates: Point,
+        name: String,
+        distance: Distance,
+        pageable: Pageable
+    ): Page<Place>
 
     fun findByCoordinates(coordinates: GeoJsonPoint): Optional<Place>
 

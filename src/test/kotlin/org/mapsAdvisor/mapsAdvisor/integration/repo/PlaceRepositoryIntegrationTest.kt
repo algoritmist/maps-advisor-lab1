@@ -14,7 +14,7 @@ import org.springframework.data.geo.Point
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 import java.util.*
 
-class PlaceRepositoryIntegrationTest: IntegrationEnvironment() {
+class PlaceRepositoryIntegrationTest : IntegrationEnvironment() {
 
     @Autowired
     private lateinit var placeRepository: PlaceRepository
@@ -50,7 +50,8 @@ class PlaceRepositoryIntegrationTest: IntegrationEnvironment() {
         placeRepository.save(place)
 
         val pageable: Pageable = PageRequest.of(0, 10)
-        val foundPlaces = placeRepository.findByCoordinatesNear(Point(25.0, 25.0), Distance(5.0, Metrics.KILOMETERS), pageable)
+        val foundPlaces =
+            placeRepository.findByCoordinatesNear(Point(25.0, 25.0), Distance(5.0, Metrics.KILOMETERS), pageable)
 
         assertThat(foundPlaces.content).isNotEmpty
         assertThat(foundPlaces.content[0].name).isEqualTo("Cafe")
@@ -62,7 +63,12 @@ class PlaceRepositoryIntegrationTest: IntegrationEnvironment() {
         placeRepository.save(place)
 
         val pageable: Pageable = PageRequest.of(0, 10)
-        val foundPlaces = placeRepository.findByCoordinatesNearAndTagsContains(Point(30.0, 30.0), "Nature", Distance(5.0, Metrics.KILOMETERS), pageable)
+        val foundPlaces = placeRepository.findByCoordinatesNearAndTagsContains(
+            Point(30.0, 30.0),
+            "Nature",
+            Distance(5.0, Metrics.KILOMETERS),
+            pageable
+        )
 
         assertThat(foundPlaces.content).isNotEmpty
         assertThat(foundPlaces.content[0].name).isEqualTo("Park")
@@ -74,7 +80,12 @@ class PlaceRepositoryIntegrationTest: IntegrationEnvironment() {
         placeRepository.save(place)
 
         val pageable: Pageable = PageRequest.of(0, 10)
-        val foundPlaces = placeRepository.findByCoordinatesNearAndNameContains(Point(35.0, 35.0), "Bea", Distance(5.0, Metrics.KILOMETERS), pageable)
+        val foundPlaces = placeRepository.findByCoordinatesNearAndNameContains(
+            Point(35.0, 35.0),
+            "Bea",
+            Distance(5.0, Metrics.KILOMETERS),
+            pageable
+        )
 
         assertThat(foundPlaces.content).isNotEmpty
         assertThat(foundPlaces.content[0].name).isEqualTo("Beach")
@@ -94,7 +105,12 @@ class PlaceRepositoryIntegrationTest: IntegrationEnvironment() {
     @Test
     fun givenPlaceRepository_whenDeleteAllByOwnersContains_thenOK() {
         val place1 = Place("130", "Aquarium", GeoJsonPoint(45.0, 45.0), owners = listOf("owner1"))
-        val place2 = Place("131", "Botanical Garden", GeoJsonPoint(50.0, 50.0), owners = listOf("owner1", "owner2"))
+        val place2 = Place(
+            "131",
+            "Botanical Garden",
+            GeoJsonPoint(50.0, 50.0),
+            owners = listOf("owner1", "owner2")
+        )
         placeRepository.saveAll(listOf(place1, place2))
 
         placeRepository.deleteAllByOwnersContains("owner1")

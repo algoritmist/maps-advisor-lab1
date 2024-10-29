@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class PlaceControllerTest: IntegrationEnvironment() {
+class PlaceControllerTest : IntegrationEnvironment() {
     @Autowired
     private lateinit var mvc: MockMvc
     private val objectMapper: ObjectMapper = ObjectMapper()
@@ -29,8 +29,18 @@ class PlaceControllerTest: IntegrationEnvironment() {
     fun givenPlace_whenSave_thenGetPlace() {
         val mvcResult = mvc.perform(
             post("/api/v1/place").contentType("application/json")
-                .content(objectMapper.writeValueAsString(CreatePlaceRequest("Banana", Coordinates(4.7, 8.0), listOf(), listOf(), "aboba"))
-        ))
+                .content(
+                    objectMapper.writeValueAsString(
+                        CreatePlaceRequest(
+                            "Banana",
+                            Coordinates(4.7, 8.0),
+                            listOf(),
+                            listOf(),
+                            "aboba"
+                        )
+                    )
+                )
+        )
             .andExpect(status().isCreated)
             .andReturn()
 
@@ -70,7 +80,13 @@ class PlaceControllerTest: IntegrationEnvironment() {
 
     @Test
     fun givenPlace_whenDelete_thenPlaceNotFound() {
-        val createPlaceRequest = CreatePlaceRequest("Banana", Coordinates(4.7, 8.9), listOf(), listOf(), "aboba")
+        val createPlaceRequest = CreatePlaceRequest(
+            "Banana",
+            Coordinates(4.7, 8.9),
+            listOf(),
+            listOf(),
+            "aboba"
+        )
 
         val mvcResult = mvc.perform(
             post("/api/v1/place")

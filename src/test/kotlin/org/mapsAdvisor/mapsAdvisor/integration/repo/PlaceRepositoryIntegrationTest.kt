@@ -8,6 +8,8 @@ import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.geo.Distance
+import org.springframework.data.geo.Metrics
 import org.springframework.data.geo.Point
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 import java.util.*
@@ -48,7 +50,7 @@ class PlaceRepositoryIntegrationTest: IntegrationEnvironment() {
         placeRepository.save(place)
 
         val pageable: Pageable = PageRequest.of(0, 10)
-        val foundPlaces = placeRepository.findByCoordinatesNear(Point(25.0, 25.0), pageable)
+        val foundPlaces = placeRepository.findByCoordinatesNear(Point(25.0, 25.0), Distance(5.0, Metrics.KILOMETERS), pageable)
 
         assertThat(foundPlaces.content).isNotEmpty
         assertThat(foundPlaces.content[0].name).isEqualTo("Cafe")
@@ -60,7 +62,7 @@ class PlaceRepositoryIntegrationTest: IntegrationEnvironment() {
         placeRepository.save(place)
 
         val pageable: Pageable = PageRequest.of(0, 10)
-        val foundPlaces = placeRepository.findByCoordinatesNearAndTagsContains(Point(30.0, 30.0), "Nature", pageable)
+        val foundPlaces = placeRepository.findByCoordinatesNearAndTagsContains(Point(30.0, 30.0), "Nature", Distance(5.0, Metrics.KILOMETERS), pageable)
 
         assertThat(foundPlaces.content).isNotEmpty
         assertThat(foundPlaces.content[0].name).isEqualTo("Park")
@@ -72,7 +74,7 @@ class PlaceRepositoryIntegrationTest: IntegrationEnvironment() {
         placeRepository.save(place)
 
         val pageable: Pageable = PageRequest.of(0, 10)
-        val foundPlaces = placeRepository.findByCoordinatesNearAndNameContains(Point(35.0, 35.0), "Bea", pageable)
+        val foundPlaces = placeRepository.findByCoordinatesNearAndNameContains(Point(35.0, 35.0), "Bea", Distance(5.0, Metrics.KILOMETERS), pageable)
 
         assertThat(foundPlaces.content).isNotEmpty
         assertThat(foundPlaces.content[0].name).isEqualTo("Beach")

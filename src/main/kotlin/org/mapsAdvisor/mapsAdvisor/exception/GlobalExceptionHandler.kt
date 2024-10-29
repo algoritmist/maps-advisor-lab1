@@ -2,7 +2,7 @@ package org.mapsAdvisor.mapsAdvisor.exception
 
 import com.fasterxml.jackson.databind.JsonMappingException
 import jakarta.validation.ConstraintViolationException
-import org.mapsAdvisor.mapsAdvisor.model.ErrorMessage
+import org.mapsAdvisor.mapsAdvisor.model.error.ErrorMessage
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageConversionException

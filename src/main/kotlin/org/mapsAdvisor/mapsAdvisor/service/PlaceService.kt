@@ -10,6 +10,8 @@ import org.mapsAdvisor.mapsAdvisor.repository.PersonRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceFeedbackRepository
 import org.mapsAdvisor.mapsAdvisor.repository.PlaceRepository
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.geo.Distance
+import org.springframework.data.geo.Metrics
 import org.springframework.data.geo.Point
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 import org.springframework.data.repository.findByIdOrNull
@@ -87,7 +89,7 @@ class PlaceService(
         size: Int
     ): List<Place> {
         val pageable = PageRequest.of(page, size)
-        return placeRepository.findByCoordinatesNear(Point(longitude, latitude), pageable).content
+        return placeRepository.findByCoordinatesNear(Point(longitude, latitude), Distance(distanceKm, Metrics.KILOMETERS), pageable).content
     }
 
     fun getPlacesNearByTag(
@@ -99,7 +101,7 @@ class PlaceService(
         size: Int
     ): List<Place> {
         val pageable = PageRequest.of(page, size)
-        return placeRepository.findByCoordinatesNearAndTagsContains(Point(longitude, latitude), tag, pageable).content
+        return placeRepository.findByCoordinatesNearAndTagsContains(Point(longitude, latitude), tag, Distance(distanceKm, Metrics.KILOMETERS), pageable).content
     }
 
     fun getPlacesNearByName(
@@ -111,7 +113,7 @@ class PlaceService(
         size: Int
     ): List<Place> {
         val pageable = PageRequest.of(page, size)
-        return placeRepository.findByCoordinatesNearAndNameContains(Point(longitude, latitude), name, pageable).content
+        return placeRepository.findByCoordinatesNearAndNameContains(Point(longitude, latitude), name, Distance(distanceKm, Metrics.KILOMETERS), pageable).content
     }
 
     fun updateDescription(id: String, description: String): Place {

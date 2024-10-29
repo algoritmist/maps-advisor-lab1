@@ -47,11 +47,11 @@ class RouteController(
         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
         @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
     ): ResponseEntity<List<RouteResponse>> {
-        val companies = routeService.getAllRoutes(page, size)
+        val routes = routeService.getAllRoutes(page, size)
 
         return ResponseEntity
             .ok(
-                companies.map { RouteResponse.fromEntity(it) }
+                routes.map { RouteResponse.fromEntity(it) }
             )
     }
 

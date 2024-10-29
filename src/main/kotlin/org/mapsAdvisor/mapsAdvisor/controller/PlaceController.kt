@@ -88,11 +88,11 @@ class PlaceController(
         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
         @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        val companies = placeService.getPlacesNearByTag(latitude, longitude, distanceKm, tag, page, size)
+        val places = placeService.getPlacesNearByTag(latitude, longitude, distanceKm, tag, page, size)
 
         return ResponseEntity
             .ok(
-                companies.map { PlaceResponse.fromEntity(it) }
+                places.map { PlaceResponse.fromEntity(it) }
             )
     }
 
@@ -105,11 +105,11 @@ class PlaceController(
         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero page: Int,
         @RequestParam(required = false, defaultValue = "50") @PositiveOrZero @Max(MAX_PAGE_SIZE) size: Int
     ): ResponseEntity<List<PlaceResponse>> {
-        val companies = placeService.getPlacesNearByName(latitude, longitude, distanceKm, name, page, size)
+        val places = placeService.getPlacesNearByName(latitude, longitude, distanceKm, name, page, size)
 
         return ResponseEntity
             .ok(
-                companies.map { PlaceResponse.fromEntity(it) }
+                places.map { PlaceResponse.fromEntity(it) }
             )
     }
 

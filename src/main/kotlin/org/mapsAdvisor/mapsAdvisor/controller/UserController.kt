@@ -19,21 +19,21 @@ class UserController(
 ) {
     @PostMapping
     fun createUser(@Valid @RequestBody newUser: CreateUserRequest): ResponseEntity<UserResponse> {
-        val person = userService.createUser(newUser)
+        val user = userService.createUser(newUser)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(
-                UserResponse.fromEntity(person)
+                UserResponse.fromEntity(user)
             )
     }
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: String): ResponseEntity<UserResponse> {
-        val person = userService.getUser(id) ?: throw NotFoundException("User with id $id not found")
+        val user = userService.getUser(id) ?: throw NotFoundException("User with id $id not found")
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
-                UserResponse.fromEntity(person)
+                UserResponse.fromEntity(user)
             )
     }
 

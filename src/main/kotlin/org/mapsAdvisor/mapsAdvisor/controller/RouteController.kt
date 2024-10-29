@@ -23,12 +23,12 @@ class RouteController(
 
     @PostMapping
     fun createRoute(@Valid @RequestBody request: CreateRouteRequest): ResponseEntity<RouteResponse> {
-        val createdPlace = routeService.createRoute(request)
+        val createdRoute = routeService.createRoute(request)
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(
-                RouteResponse.fromEntity(createdPlace)
+                RouteResponse.fromEntity(createdRoute)
             )
     }
 

@@ -89,7 +89,7 @@ class GlobalExceptionHandler {
             ex.message
         )
 
-        return ResponseEntity(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(JsonMappingException::class)

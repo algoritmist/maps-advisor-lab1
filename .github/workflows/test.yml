@@ -1,4 +1,4 @@
-name: Test worklow
+name: test
 run-name: ${{ github.actor }} is running worklow
 on:
   push:
